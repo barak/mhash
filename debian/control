@@ -1,0 +1,18 @@
+Source: mhash
+Section: devel
+Priority: optional
+Maintainer: Gergely Madarasz <gorgo@sztaki.hu>
+Standards-Version: 3.0.1
+
+Package: libmhash1
+Architecture: any
+Section: libs
+Depends: ${shlibs:Depends}
+Description: Library for strong hashes like MD5 and SHA1
+ This package contains the shared library
+
+Package: libmhash-dev
+Architecture: any
+Depends: libmhash1 (= ${Source-Version}), libc6-dev
+Description: Library for strong hashes like MD5 and SHA1
+ This package contains header files and the static library
