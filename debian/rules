@@ -1,109 +1,83 @@
 #!/usr/bin/make -f
-#-*- makefile -*-
-# Made with the aid of dh_make, by Craig Small
-# Sample debian/rules that uses debhelper. GNU copyright 1997 by Joey Hess.
-# This version is for a hypothetical package that builds an
-# architecture-dependant package, as well as an architecture-independant
-# package.
-export DH_COMPAT=2
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
 
-package=mhash
-
-version=$(shell expr `pwd` : '.*-\([0-9.]*\)')
-version_major=$(shell expr `pwd` : '.*-\([0-9]*\).[0-9.]*')
-
-# Uncomment this to turn on verbose mode. 
+# Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-build: build-stamp
+# This is the debhelper compatability version to use.
+export DH_COMPAT=2
+
+AUTOTOOLS := /usr/share/misc
+DESTDIR := $(shell pwd)/debian/tmp
+
+export DEB_HOST_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+export DEB_BUILD_GNU_TYPE ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	./configure --build=$(DEB_BUILD_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE) \
+	    --prefix=/usr --mandir=/usr/share/man --infodir=/usr/share/info
+	touch configure-stamp
+
+build: configure-stamp build-stamp
 build-stamp:
 	dh_testdir
-
-	./configure --prefix=/usr --mandir=/usr/share/man
-	make
+	$(MAKE)
 	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp install-stamp
-
+	rm -f build-stamp configure-stamp
 	-rm -rf static shared
-	# Add here commands to clean up after the build process.
 	-$(MAKE) distclean
-
+	-test -r $(AUTOTOOLS)/config.sub \
+	    && cp -pf $(AUTOTOOLS)/config.sub config.sub
+	-test -r $(AUTOTOOLS)/config.guess \
+	    && cp -pf $(AUTOTOOLS)/config.guess config.guess
 	dh_clean
 
-install: install-stamp
-install-stamp: build-stamp
+install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-
-	# Add here commands to install the package into debian/tmp.
-	$(MAKE) install prefix=`pwd`/debian/tmp/usr mandir=`pwd`/debian/tmp/usr/share/man
-
+	$(MAKE) install DESTDIR=$(DESTDIR)
 	dh_movefiles
-	touch install-stamp
 
 # Build architecture-independent files here.
 binary-indep: build install
-	dh_testversion 2.0.40
-	dh_testdir -i
-	dh_testroot -i
-	dh_installdocs -i
-	dh_installexamples -i
-	dh_installmenu -i
-#	dh_installemacsen -i
-#	dh_installinit -i
-	dh_installcron -i
-#	dh_installmanpages -i
-#	dh_undocumented
-	dh_installchangelogs -i ChangeLog
+# We have nothing to do by default.
 
-	dh_link -i
-	dh_compress -i
-	dh_fixperms -i
-	# You may want to make some executables suid here
-	dh_suidregister -i
-	dh_installdeb -i
-	dh_gencontrol -i
-	dh_md5sums -i
-	dh_builddeb -i
-
+# Build architecture-dependent files here.
 binary-arch: build install
-	dh_testversion 2
-	dh_testdir -a
-	dh_testroot -a
-	dh_installdocs 
-	rm -rf debian/libmhash-dev/usr/share/doc/libmhash-dev
-	ln -s libmhash1 debian/libmhash-dev/usr/share/doc/libmhash-dev
-	dh_installexamples -a
-	dh_installmenu -a
-#	dh_installemacsen -a
-#	dh_installinit -a
-	dh_installcron -a
-#	dh_installmanpages -a
+	dh_testdir
+	dh_testroot
+#	dh_installdebconf
+	dh_installdocs
+	dh_installexamples
+	dh_installmenu
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installinit
+	dh_installcron
+	dh_installmanpages --package=libmhash-dev
+	dh_installinfo
 #	dh_undocumented
-	dh_installchangelogs -plibmhash1 ChangeLog
+	dh_installchangelogs NEWS
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+#	dh_perl
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
 
-	dh_link -a
-	dh_strip -a
-	dh_compress -a
-	dh_fixperms -a
-	# You may want to make some executables suid here
-	dh_suidregister -a
-	dh_makeshlibs -a
-	dh_installdeb -a
-#	dh_perl -a
-	dh_shlibdeps -a
-	dh_gencontrol -a
-	dh_md5sums -a
-	dh_builddeb -a
-
-source diff:                                                                  
-	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
-
-binary: binary-arch
-.PHONY: build clean binary-indep binary-arch binary
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
