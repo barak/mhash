@@ -20,7 +20,14 @@ enum hashid {
 	MHASH_TIGER160,
 	MHASH_MD4,
 	MHASH_SHA256,
-	MHASH_ADLER32
+	MHASH_ADLER32,
+	MHASH_SHA224,
+	MHASH_SHA512,
+	MHASH_SHA384,
+	MHASH_WHIRLPOOL,
+	MHASH_RIPEMD128,
+	MHASH_RIPEMD256,
+	MHASH_RIPEMD320,
 };
 
 enum keygenid {
@@ -44,6 +51,10 @@ typedef struct keygen {
 	int		salt_size;
 } KEYGEN;
 
+typedef void (*INIT_FUNC)( void*);
+typedef void (*HASH_FUNC)(void*, const void*, int);
+typedef void (*FINAL_FUNC)(void*);
+typedef void (*DEINIT_FUNC)(void*, unsigned char*);
 
 typedef struct {
 	int hmac_key_size;
@@ -53,6 +64,11 @@ typedef struct {
 	word8 *state;
 	int	state_size;
 	hashid algorithm_given;
+
+	HASH_FUNC hash_func;
+	FINAL_FUNC final_func;
+	DEINIT_FUNC deinit_func;
+	                        
 } MHASH_INSTANCE;
 
 typedef MHASH_INSTANCE * MHASH;

@@ -20,65 +20,175 @@
  */
 
 
-/* $Id: mhash.c,v 1.28 2002/02/10 10:10:08 nmav Exp $ */
+/* $Id: mhash.c,v 1.34 2003/01/19 18:00:58 nmav Exp $ */
 
 #include <stdlib.h>
 
 #include "libdefs.h"
 
-#ifdef HAVE_PTHREAD_H
-#include <pthread.h>
+#include "mhash_int.h"
+
+#ifdef ENABLE_CRC32
+# include "mhash_crc32.h"
 #endif
 
-#include "mhash_int.h"
-#include "mhash_crc32.h"
-#include "mhash_haval.h"
-#include "mhash_md5.h"
-#include "mhash_md4.h"
-#include "mhash_sha1.h"
-#include "mhash_tiger.h"
-#include "mhash_ripemd.h"
-#include "mhash_sha256.h"
-#include "mhash_adler32.h"
-#include "gosthash.h"
+#ifdef ENABLE_HAVAL
+# include "mhash_haval.h"
+#endif
 
-/* 19/03/2000 Changes for better thread handling --nikos */
+#ifdef ENABLE_MD5
+# include "mhash_md5.h"
+#endif
 
-#define MAX_BLOCK_SIZE 64
+#ifdef ENABLE_MD4
+# include "mhash_md4.h"
+#endif
 
-#define MHASH_ENTRY(name, blksize, hash_pblock) \
-	{ #name, name, blksize, hash_pblock }
+#ifdef ENABLE_SHA1
+# include "mhash_sha1.h"
+#endif
+
+#ifdef ENABLE_TIGER
+# include "mhash_tiger.h"
+#endif
+
+#ifdef ENABLE_RIPEMD
+# include "mhash_ripemd.h"
+#endif
+
+#ifdef ENABLE_SHA256_SHA224
+# include "mhash_sha256_sha224.h"
+#endif
+
+#ifdef ENABLE_SHA512_SHA384
+# include "mhash_sha512_sha384.h"
+#endif
+
+#ifdef ENABLE_ADLER32
+# include "mhash_adler32.h"
+#endif
+
+#ifdef ENABLE_GOST
+# include "mhash_gost.h"
+#endif
+
+#ifdef ENABLE_WHIRLPOOL
+# include "mhash_whirlpool.h"
+#endif
+
+/* 19/03/2000 Changes for better thread handling --nikos 
+ * Actually it is thread safe.
+ */
+
+#define MAX_BLOCK_SIZE 128
+
+#define MHASH_ENTRY(name, blksize, hash_pblock, state_size, init_func, \
+	hash_func, final_func, deinit_func) \
+	{ #name, name, blksize, hash_pblock, state_size, init_func,\
+		hash_func, final_func, deinit_func }
 
 struct mhash_hash_entry {
 	char *name;
 	hashid id;
 	size_t blocksize;
 	size_t hash_pblock;
+
+	size_t state_size;
+	INIT_FUNC init_func;
+	HASH_FUNC hash_func;
+	FINAL_FUNC final_func;
+	DEINIT_FUNC deinit_func;
 };
 
-static mhash_hash_entry algorithms[] = {
-	MHASH_ENTRY(MHASH_CRC32, 4, 0),
-	MHASH_ENTRY(MHASH_ADLER32, 4, 0),
-	MHASH_ENTRY(MHASH_MD5, 16, 64),
-	MHASH_ENTRY(MHASH_MD4, 16, 64),
-	MHASH_ENTRY(MHASH_SHA1, 20, 64),
-	MHASH_ENTRY(MHASH_SHA256, 32, 64),
-	MHASH_ENTRY(MHASH_HAVAL256, 32, 128),
-	MHASH_ENTRY(MHASH_HAVAL128, 16, 128),
-	MHASH_ENTRY(MHASH_HAVAL160, 20, 128),
-	MHASH_ENTRY(MHASH_HAVAL192, 24, 128),
-	MHASH_ENTRY(MHASH_HAVAL224, 28, 128),
-	MHASH_ENTRY(MHASH_RIPEMD160, 20, 64),
-	MHASH_ENTRY(MHASH_TIGER, 24, 64),
-	MHASH_ENTRY(MHASH_TIGER128, 16, 64),
-	MHASH_ENTRY(MHASH_TIGER160, 20, 64),
-	MHASH_ENTRY(MHASH_GOST, 32, 0),
-	MHASH_ENTRY(MHASH_CRC32B, 4, 0),
+static const mhash_hash_entry algorithms[] = {
+#ifdef ENABLE_CRC32
+	MHASH_ENTRY(MHASH_CRC32, 4, 0, sizeof(word32), mhash_clear_crc32, 
+		mhash_crc32, NULL, mhash_get_crc32),
+	MHASH_ENTRY(MHASH_CRC32B, 4, 0, sizeof(word32), mhash_clear_crc32,
+		mhash_crc32b, NULL, mhash_get_crc32),
+#endif
+
+#ifdef ENABLE_ADLER32
+	MHASH_ENTRY(MHASH_ADLER32, 4, 0, sizeof(word32), mhash_clear_adler32, 
+		mhash_adler32, NULL, mhash_get_adler32),
+#endif
+
+#ifdef ENABLE_MD5
+	MHASH_ENTRY(MHASH_MD5, 16, 64, sizeof(MD5_CTX), MD5Init,
+		MD5Update, NULL, MD5Final),
+#endif
+
+#ifdef ENABLE_MD4
+	MHASH_ENTRY(MHASH_MD4, 16, 64, sizeof(MD4_CTX), MD4Init, 
+		MD4Update, NULL, MD4Final),
+#endif
+
+#ifdef ENABLE_SHA1
+	MHASH_ENTRY(MHASH_SHA1, 20, 64, sizeof(SHA_CTX), sha_init, 
+		sha_update, sha_final, sha_digest),
+#endif
+
+#ifdef ENABLE_SHA256_SHA224
+	MHASH_ENTRY(MHASH_SHA256, 32, 64, sizeof( SHA256_SHA224_CTX), sha256_init,
+		sha256_sha224_update, sha256_sha224_final, sha256_digest),
+	MHASH_ENTRY(MHASH_SHA224, 28, 64, sizeof( SHA256_SHA224_CTX), sha224_init,
+		sha256_sha224_update, sha256_sha224_final, sha224_digest),
+#endif
+
+#ifdef ENABLE_SHA512_SHA384
+	MHASH_ENTRY(MHASH_SHA512, 64, 128, sizeof( SHA512_SHA384_CTX), sha512_init,
+		sha512_sha384_update, sha512_sha384_final, sha512_digest),
+	MHASH_ENTRY(MHASH_SHA384, 48, 128, sizeof( SHA512_SHA384_CTX), sha384_init,
+		sha512_sha384_update, sha512_sha384_final, sha384_digest),
+#endif
+
+#ifdef ENABLE_HAVAL
+	MHASH_ENTRY(MHASH_HAVAL256, 32, 128, sizeof(havalContext), havalInit256,
+		havalUpdate, NULL, havalFinal),
+	MHASH_ENTRY(MHASH_HAVAL128, 16, 128, sizeof(havalContext), havalInit128,
+		havalUpdate, NULL, havalFinal),
+	MHASH_ENTRY(MHASH_HAVAL160, 20, 128, sizeof(havalContext), havalInit160,
+		havalUpdate, NULL, havalFinal),
+	MHASH_ENTRY(MHASH_HAVAL192, 24, 128, sizeof(havalContext), havalInit192,
+		havalUpdate, NULL, havalFinal),
+	MHASH_ENTRY(MHASH_HAVAL224, 28, 128, sizeof(havalContext), havalInit224,
+		havalUpdate, NULL, havalFinal),
+#endif
+
+#ifdef ENABLE_RIPEMD
+	MHASH_ENTRY(MHASH_RIPEMD128, 16, 64, sizeof(RIPEMD_CTX), ripemd128_init, 
+		ripemd_update, ripemd_final, ripemd_digest),
+	MHASH_ENTRY(MHASH_RIPEMD160, 20, 64, sizeof(RIPEMD_CTX), ripemd160_init, 
+		ripemd_update, ripemd_final, ripemd_digest),
+	MHASH_ENTRY(MHASH_RIPEMD256, 32, 64, sizeof(RIPEMD_CTX), ripemd256_init, 
+		ripemd_update, ripemd_final, ripemd_digest),
+	MHASH_ENTRY(MHASH_RIPEMD320, 40, 64, sizeof(RIPEMD_CTX), ripemd320_init, 
+		ripemd_update, ripemd_final, ripemd_digest),
+#endif
+
+#ifdef ENABLE_TIGER
+	MHASH_ENTRY(MHASH_TIGER, 24, 64, sizeof(TIGER_CTX), tiger_init, 
+		tiger_update, tiger_final, tiger_digest),
+	MHASH_ENTRY(MHASH_TIGER128, 16, 64, sizeof(TIGER_CTX), tiger_init,
+		tiger_update, tiger_final, tiger128_digest),
+	MHASH_ENTRY(MHASH_TIGER160, 20, 64, sizeof(TIGER_CTX), tiger_init, 
+		tiger_update, tiger_final, tiger160_digest),
+#endif
+
+#ifdef ENABLE_GOST
+	MHASH_ENTRY(MHASH_GOST, 32, 0, sizeof(GostHashCtx), gosthash_reset, 
+		gosthash_update, NULL, gosthash_final),
+#endif
+
+#ifdef ENABLE_WHIRLPOOL
+	MHASH_ENTRY(MHASH_WHIRLPOOL, 64, 64, sizeof(WHIRLPOOL_CTX), whirlpool_init, 
+		    whirlpool_update, whirlpool_final, whirlpool_digest),
+#endif
 	{0}
 };
 
 #define MHASH_LOOP(b) \
-	mhash_hash_entry *p; \
+	const mhash_hash_entry *p; \
 	for(p = algorithms; p->name != NULL; p++) { b ; }
 
 #define MHASH_ALG_LOOP(a) \
@@ -104,6 +214,43 @@ WIN32DLL_DEFINE size_t mhash_get_block_size(hashid type)
 	MHASH_ALG_LOOP(ret = p->blocksize);
 	return ret;
 }
+
+WIN32DLL_DEFINE int _mhash_get_state_size(hashid type)
+{
+	int size = -1;
+
+	MHASH_ALG_LOOP(size = p->state_size);
+	return size;
+}
+WIN32DLL_DEFINE INIT_FUNC _mhash_get_init_func(hashid type)
+{
+	INIT_FUNC func = NULL;
+
+	MHASH_ALG_LOOP(func = p->init_func);
+	return func;
+}
+WIN32DLL_DEFINE HASH_FUNC _mhash_get_hash_func(hashid type)
+{
+	HASH_FUNC func = NULL;
+
+	MHASH_ALG_LOOP(func = p->hash_func);
+	return func;
+}
+WIN32DLL_DEFINE FINAL_FUNC _mhash_get_final_func(hashid type)
+{
+	FINAL_FUNC func = NULL;
+
+	MHASH_ALG_LOOP(func = p->final_func);
+	return func;
+}
+WIN32DLL_DEFINE DEINIT_FUNC _mhash_get_deinit_func(hashid type)
+{
+	DEINIT_FUNC func = NULL;
+
+	MHASH_ALG_LOOP(func = p->deinit_func);
+	return func;
+}
+
 
 /* function created in order for mhash to compile under WIN32 */
 char *mystrdup(char *str)
@@ -167,136 +314,38 @@ MHASH ret;
 MHASH mhash_init_int(const hashid type)
 {
 	MHASH ret;
+	INIT_FUNC func;
 
 	if ( (ret = malloc( sizeof(MHASH_INSTANCE))) == NULL) return MHASH_FAILED;
 	ret->algorithm_given = type;
 	ret->hmac_key = NULL;
 	ret->state = NULL;
 	ret->hmac_key_size = 0;
-	
-	switch (type) {
-	case MHASH_CRC32:
-	case MHASH_CRC32B:
-		ret->state_size = sizeof(word32);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		mhash_clear_crc32((void *) ret->state);
-		break;
-	case MHASH_ADLER32:
-		ret->state_size = sizeof(word32);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		mhash_clear_adler32((void *) ret->state);
-		break;
-	case MHASH_MD5:
-		ret->state_size = sizeof(MD5_CTX);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		MD5Init((void *) ret->state);
-		break;
-	case MHASH_MD4:
-		ret->state_size = sizeof(MD4_CTX);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		MD4Init((void *) ret->state);
-		break;
-	case MHASH_SHA1:
-		ret->state_size = sizeof(SHA_CTX);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		sha_init((void *) ret->state);
-		break;
-	case MHASH_SHA256:
-		ret->state_size = sizeof( SHA256_CTX);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		sha256_init((void *) ret->state);
-		break;
-	case MHASH_HAVAL256:
-		ret->state_size = sizeof(havalContext);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		havalInit((void *) ret->state, 3, 256);
-		break;
-	case MHASH_HAVAL224:
-		ret->state_size = sizeof(havalContext);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		havalInit((void *) ret->state, 3, 224);
-		break;
-	case MHASH_HAVAL192:
-		ret->state_size = sizeof(havalContext);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		havalInit((void *) ret->state, 3, 192);
-		break;
-	case MHASH_HAVAL160:
-		ret->state_size = sizeof(havalContext);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		havalInit((void *) ret->state, 3, 160);
-		break;
-	case MHASH_HAVAL128:
-		ret->state_size = sizeof(havalContext);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		havalInit((void *) ret->state, 3, 128);
-		break;
-	case MHASH_RIPEMD160:
-		ret->state_size = sizeof(RIPEMD_CTX);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		ripemd_init((void *) ret->state);
-		break;
-	case MHASH_TIGER:
-	case MHASH_TIGER128:
-	case MHASH_TIGER160:
-		ret->state_size = sizeof(TIGER_CTX);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		tiger_init((void*) ret->state);
-		break;
-	case MHASH_GOST:
-		ret->state_size = sizeof(GostHashCtx);
-		if ( (ret->state = malloc(ret->state_size)) == NULL) {
-			free(ret);
-			return MHASH_FAILED;
-		}
-		gosthash_reset((void *) ret->state);
-		break;
-	default:
+
+	ret->state_size = _mhash_get_state_size( type);
+	if (ret->state_size <= 0) {
 		free(ret);
-		ret = MHASH_FAILED;
-		break;
+		return MHASH_FAILED;
+	}
+	
+	if ( (ret->state = malloc(ret->state_size)) == NULL) {
+		free(ret);
+		return MHASH_FAILED;
+	}
+	func = _mhash_get_init_func( type);
+	if (func!=NULL)
+		func( ret->state);
+	else {
+		free( ret);
+		return MHASH_FAILED;
 	}
 
+	ret->hash_func = _mhash_get_hash_func( type);
+	ret->deinit_func = _mhash_get_deinit_func( type);
+	ret->final_func = _mhash_get_final_func( type);
+
 	return ret;
+		
 }
 
 #define MIX32(a) \
@@ -321,139 +370,53 @@ void mhash_32bit_conversion(word32 * ptr, size_t count)
 
 /* plaintext should be a multiply of the algorithm's block size */
 
-int mhash(MHASH thread, const void *plaintext, size_t size)
+int mhash(MHASH td, const void *plaintext, size_t size)
 {
-
-	switch (thread->algorithm_given) {
-	case MHASH_CRC32:
-		mhash_crc32((void *) thread->state, plaintext, size);
-		break;
-	case MHASH_ADLER32:
-		mhash_adler32((void *) thread->state, plaintext, size);
-		break;
-	case MHASH_CRC32B:
-		crc32b((void *) thread->state, plaintext, size);
-		break;
-	case MHASH_MD5:
-		MD5Update((void *) thread->state, plaintext, size);
-		break;
-	case MHASH_MD4:
-		MD4Update((void *) thread->state, plaintext, size);
-		break;
-	case MHASH_SHA1:
-		sha_update((void *) thread->state, (void *) plaintext,
-			   size);
-		break;
-	case MHASH_SHA256:
-		sha256_update((void *) thread->state, (void *) plaintext, size);
-		break;
-	case MHASH_HAVAL256:
-	case MHASH_HAVAL224:
-	case MHASH_HAVAL192:
-	case MHASH_HAVAL160:
-	case MHASH_HAVAL128:
-		havalUpdate((void *) thread->state, plaintext, size);
-		break;
-	case MHASH_RIPEMD160:
-		ripemd_update((void *) thread->state, (void *) plaintext,
-			      size);
-		break;
-	case MHASH_TIGER:
-	case MHASH_TIGER160:
-	case MHASH_TIGER128:
-		tiger_update((void*)thread->state, (void*)plaintext, size);
-		break;
-	case MHASH_GOST:
-		gosthash_update((void *) thread->state, plaintext, size);
-		break;
-	}
+	
+	if (td->hash_func!=NULL)
+		td->hash_func( td->state, plaintext, size);
 
 	return 0;
 }
 
 
 WIN32DLL_DEFINE
-    void mhash_deinit(MHASH thread, void *result)
+    void mhash_deinit(MHASH td, void *result)
 {
+	
+	if (td->final_func!=NULL)
+		td->final_func( td->state);
 
-	if (result!=NULL)
-	switch (thread->algorithm_given) {
-	case MHASH_CRC32:
-	case MHASH_CRC32B:
-		mhash_get_crc32(result, (void *) thread->state);
-		break;
-	case MHASH_ADLER32:
-		mhash_get_adler32(result, (void *) thread->state);
-		break;
-	case MHASH_MD5:
-		MD5Final( result, (void *) thread->state);
-		break;
-	case MHASH_MD4:
-		MD4Final( result, (void *) thread->state);
-		break;
-	case MHASH_SHA1:
-		sha_final((void *) thread->state);
-		sha_digest((void *) thread->state, result);
-		break;
-	case MHASH_SHA256:
-		sha256_final((void *) thread->state);
-		sha256_digest((void *) thread->state, result);
-		break;
-	case MHASH_HAVAL256:
-	case MHASH_HAVAL224:
-	case MHASH_HAVAL192:
-	case MHASH_HAVAL160:
-	case MHASH_HAVAL128:
-		havalFinal((void *) thread->state, result);
-		break;
-	case MHASH_RIPEMD160:
-		ripemd_final((void *) thread->state);
-		ripemd_digest((void *) thread->state, result);
-		break;
-	case MHASH_TIGER:
-		tiger_final((void*) thread->state);
-		tiger_digest((void *) thread->state, result);
-		break;
-	case MHASH_TIGER128:
-		tiger_final((void*) thread->state);
-		tiger128_digest((void *) thread->state, result);
-		break;
-	case MHASH_TIGER160:
-		tiger_final((void*) thread->state);
-		tiger160_digest((void *) thread->state, result);
-		break;
-	case MHASH_GOST:
-		gosthash_final((void *) thread->state, result);
-		break;
-	}
+	if (td->deinit_func!=NULL)
+		td->deinit_func( td->state, result);
 
-	if (NULL != thread->state) {
-		free(thread->state);
+	if (NULL != td->state) {
+		free(td->state);
 	}
-	free(thread);
+	free(td);
 
 	return;
 }
 
 WIN32DLL_DEFINE
-    void *mhash_end_m(MHASH thread, void *(*hash_malloc) (size_t))
+    void *mhash_end_m(MHASH td, void *(*hash_malloc) (size_t))
 {
 	void *digest;
 	int size;
 
-	size = mhash_get_block_size( thread->algorithm_given);
+	size = mhash_get_block_size( td->algorithm_given);
 	
 	digest = hash_malloc( size);
 	if (digest==NULL) return NULL;
 	
-	mhash_deinit( thread, digest);
+	mhash_deinit( td, digest);
 	
 	return digest;
 }
 
-WIN32DLL_DEFINE void *mhash_end(MHASH thread)
+WIN32DLL_DEFINE void *mhash_end(MHASH td)
 {
-	return mhash_end_m(thread, malloc);
+	return mhash_end_m(td, malloc);
 }
 
 
@@ -477,15 +440,17 @@ WIN32DLL_DEFINE size_t mhash_get_hash_pblock(hashid type)
 }
 
 WIN32DLL_DEFINE
-    int mhash_hmac_deinit(MHASH thread, void *result)
+    int mhash_hmac_deinit(MHASH td, void *result)
 {
 	unsigned char *opad;
 	unsigned char _opad[MAX_BLOCK_SIZE];
 	MHASH tmptd;
 	int i, opad_alloc = 0;
+	
 
-	if (thread->hmac_block > MAX_BLOCK_SIZE) {
-		opad = malloc(thread->hmac_block);
+
+	if (td->hmac_block > MAX_BLOCK_SIZE) {
+		opad = malloc(td->hmac_block);
 		if (opad == NULL) return -1;
 		opad_alloc = 1;
 	} else {
@@ -493,77 +458,33 @@ WIN32DLL_DEFINE
 	}
 
 
-	for (i = 0; i < thread->hmac_key_size; i++) {
-		opad[i] = (0x5C) ^ thread->hmac_key[i];
+	for (i = 0; i < td->hmac_key_size; i++) {
+		opad[i] = (0x5C) ^ td->hmac_key[i];
 	}
-	for (; i < thread->hmac_block; i++) {
+	for (; i < td->hmac_block; i++) {
 		opad[i] = (0x5C);
 	}
 
-	tmptd = mhash_init(thread->algorithm_given);
-	mhash(tmptd, opad, thread->hmac_block);
+	tmptd = mhash_init(td->algorithm_given);
+	mhash(tmptd, opad, td->hmac_block);
 
-	switch (thread->algorithm_given) {
-	case MHASH_CRC32:
-	case MHASH_CRC32B:
-		mhash_get_crc32( result, (void *) thread->state);
-		break;
-	case MHASH_ADLER32:
-		mhash_get_adler32( result, (void *) thread->state);
-		break;
-	case MHASH_MD5:
-		MD5Final( result, (void *) thread->state);
-		break;
-	case MHASH_MD4:
-		MD4Final( result, (void *) thread->state);
-		break;
-	case MHASH_SHA1:
-		sha_final((void *) thread->state);
-		sha_digest((void *) thread->state, result);
-		break;
-	case MHASH_SHA256:
-		sha256_final((void *) thread->state);
-		sha256_digest((void *) thread->state, result);
-		break;
-	case MHASH_HAVAL256:
-	case MHASH_HAVAL224:
-	case MHASH_HAVAL192:
-	case MHASH_HAVAL160:
-	case MHASH_HAVAL128:
-		havalFinal((void *) thread->state, result);
-		break;
-	case MHASH_RIPEMD160:
-		ripemd_final((void *) thread->state);
-		ripemd_digest((void *) thread->state, result);
-		break;
-	case MHASH_TIGER:
-		tiger_final((void *) thread->state);
-		tiger_digest((void *) thread->state, result);
-		break;
-	case MHASH_TIGER128:
-		tiger_final((void *) thread->state);
-		tiger128_digest((void *) thread->state, result);
-		break;
-	case MHASH_TIGER160:
-		tiger_final((void *) thread->state);
-		tiger160_digest((void *) thread->state, result);
-		break;
-	case MHASH_GOST:
-		gosthash_final((void *) thread->state, result);
-		break;
-	}
+	if (td->final_func!=NULL)
+		td->final_func( td->state);
+
+	if (td->deinit_func!=NULL)
+		td->deinit_func( td->state, result);
 
 	if (result!=NULL)
 		mhash(tmptd, result,
-		      mhash_get_block_size(thread->algorithm_given));
+		      mhash_get_block_size(td->algorithm_given));
 
-	free(thread->state);
+	free(td->state);
 
 	if (opad_alloc!=0) free(opad);
 	
-	mhash_bzero(thread->hmac_key, thread->hmac_key_size);
-	free(thread->hmac_key);
-	free(thread);
+	mhash_bzero(td->hmac_key, td->hmac_key_size);
+	free(td->hmac_key);
+	free(td);
 
 	mhash_deinit(tmptd, result);
 
@@ -572,24 +493,24 @@ WIN32DLL_DEFINE
 
 
 WIN32DLL_DEFINE
-    void *mhash_hmac_end_m(MHASH thread, void *(*hash_malloc) (size_t))
+    void *mhash_hmac_end_m(MHASH td, void *(*hash_malloc) (size_t))
 {
 	void *digest;
 
 	digest =
 	    hash_malloc(mhash_get_block_size
-			(thread->algorithm_given));
+			(td->algorithm_given));
 	if (digest == NULL) return NULL;
 
-	mhash_hmac_deinit( thread, digest);
+	mhash_hmac_deinit( td, digest);
 	
 	return digest;
 	
 }
 
-WIN32DLL_DEFINE void *mhash_hmac_end(MHASH thread)
+WIN32DLL_DEFINE void *mhash_hmac_end(MHASH td)
 {
-	return mhash_hmac_end_m(thread, malloc);
+	return mhash_hmac_end_m(td, malloc);
 }
 
 
@@ -665,14 +586,14 @@ WIN32DLL_DEFINE void mhash_free(void *ptr)
 
   Original version and idea by Blake Stephen <Stephen.Blake@veritect.com>
 */
-WIN32DLL_DEFINE int mhash_save_state_mem(MHASH thread, void *_mem, int* mem_size )
+WIN32DLL_DEFINE int mhash_save_state_mem(MHASH td, void *_mem, int* mem_size )
 {
 	int tot_size, pos;
 	unsigned char* mem = _mem;
 	
-	tot_size = sizeof(thread->algorithm_given) + sizeof(thread->hmac_key_size)
-		+ sizeof(thread->hmac_block) + thread->hmac_key_size +
-		+ sizeof(thread->state_size) + thread->state_size;
+	tot_size = sizeof(td->algorithm_given) + sizeof(td->hmac_key_size)
+		+ sizeof(td->hmac_block) + td->hmac_key_size +
+		+ sizeof(td->state_size) + td->state_size;
 	
 	if ( *mem_size < tot_size) {
 		*mem_size = tot_size;
@@ -681,23 +602,23 @@ WIN32DLL_DEFINE int mhash_save_state_mem(MHASH thread, void *_mem, int* mem_size
 	
 	if ( mem != NULL) {
 		pos = 0;
-		memcpy( mem, &thread->algorithm_given, sizeof(thread->algorithm_given));
-		pos = sizeof( thread->algorithm_given);
+		memcpy( mem, &td->algorithm_given, sizeof(td->algorithm_given));
+		pos = sizeof( td->algorithm_given);
 		
-		memcpy( &mem[pos], &thread->hmac_key_size, sizeof(thread->hmac_key_size));
-		pos += sizeof(thread->hmac_key_size);
+		memcpy( &mem[pos], &td->hmac_key_size, sizeof(td->hmac_key_size));
+		pos += sizeof(td->hmac_key_size);
 
-		memcpy( &mem[pos], &thread->hmac_block, sizeof(thread->hmac_block));
-		pos += sizeof(thread->hmac_block);
+		memcpy( &mem[pos], &td->hmac_block, sizeof(td->hmac_block));
+		pos += sizeof(td->hmac_block);
 
-		memcpy( &mem[pos], thread->hmac_key, thread->hmac_key_size);
-		pos += thread->hmac_key_size;
+		memcpy( &mem[pos], td->hmac_key, td->hmac_key_size);
+		pos += td->hmac_key_size;
 
-		memcpy( &mem[pos], &thread->state_size, sizeof(thread->state_size));
-		pos += sizeof(thread->state_size);
+		memcpy( &mem[pos], &td->state_size, sizeof(td->state_size));
+		pos += sizeof(td->state_size);
 
-		memcpy( &mem[pos], thread->state, thread->state_size);
-		pos += thread->state_size;
+		memcpy( &mem[pos], td->state, td->state_size);
+		pos += td->state_size;
 
 	}
 	return 0;
@@ -751,6 +672,10 @@ WIN32DLL_DEFINE MHASH mhash_restore_state_mem(void* _mem)
 	memcpy( ret->state, &mem[pos], ret->state_size);
 	pos += ret->state_size;
 
+	ret->hash_func = _mhash_get_hash_func( algorithm_given);
+	ret->deinit_func = _mhash_get_deinit_func( algorithm_given);
+	ret->final_func = _mhash_get_final_func( algorithm_given);
+
 	return ret;
 
 	freeall:
@@ -762,3 +687,9 @@ WIN32DLL_DEFINE MHASH mhash_restore_state_mem(void* _mem)
 		return MHASH_FAILED;
 }
 
+#ifdef WIN32
+WIN32DLL_DEFINE int main (void)
+{
+       /* empty main function to avoid linker error (see cygwin FAQ) */
+}
+#endif

@@ -1,3 +1,51 @@
+mhash (0.9.1-1) unstable; urgency=low
+
+  * New upstream version.  (closes: Bug#263093)
+  * Don't rebuild autoconf files to get static libraries.  Just pass args
+    to configure script.
+
+ -- Chris Hanson <cph@debian.org>  Tue, 30 Nov 2004 00:25:59 -0500
+
+mhash (0.8.18-4) unstable; urgency=low
+
+  * Bump version to work around failed upload.
+
+ -- Chris Hanson <cph@debian.org>  Tue, 16 Dec 2003 14:29:11 -0500
+
+mhash (0.8.18-2) unstable; urgency=low
+
+  * Put libmhash.a back.  (closes: Bug#221797, Bug#222826)
+
+ -- Chris Hanson <cph@debian.org>  Tue, 16 Dec 2003 12:54:36 -0500
+
+mhash (0.8.18-1) unstable; urgency=low
+
+  * New upstream version.  (Well, not so new really.)
+  * Remove libmhash.a since it is no longer built by upstream.
+  * Standards version 3.6.1 (no changes).
+
+ -- Chris Hanson <cph@debian.org>  Fri, 31 Oct 2003 23:37:39 -0500
+
+mhash (0.8.17-1) unstable; urgency=low
+
+  * New upstream version.
+  * Eliminate reference to dh_undocumented.
+  * Use dh_installman rather than dh_installmanpages.
+  * Add ${misc:Depends} reference.
+  * Change section of libapm-dev to libdevel.
+  * Eliminate unneeded local variables in debian/changelog.
+  * Add support for "noopt" in DEB_BUILD_OPTIONS.
+  * Change standards version to 3.5.9.
+  * Update debian/rules according to latest advice from autotools-dev.
+
+ -- Chris Hanson <cph@debian.org>  Tue, 1 Apr 2003 23:48:37 -0500
+
+mhash (0.8.16-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Chris Hanson <cph@debian.org>  Thu, 30 May 2002 16:37:07 -0400
+
 mhash (0.8.14-1) unstable; urgency=low
 
   * New upstream version.
@@ -156,7 +204,3 @@ mhash (0.5.2-1) unstable; urgency=low
   * Initial Release.
 
  -- Gergely Madarasz <gorgo@caesar.elte.hu>  Wed, 14 Jul 1999 11:35:02 +1000
-
-Local variables:
-mode: debian-changelog
-End:

@@ -8,7 +8,7 @@ NNAAMMEE
        mmhhaasshh -- HHaasshh LLiibbrraarryy
 
 VVEERRSSIIOONN
-       mhash 0.8.13
+       mhash 0.8.16
 
 SSYYNNOOPPSSIISS
         #include "mhash.h"
@@ -61,7 +61,7 @@ SSYYNNOOPPSSIISS
 
 
 
-mhash 0.8.13                2000/03/23                          1
+mhash 0.8.16                2000/03/23                          1
 
 
 
@@ -127,7 +127,7 @@ mhash(3)                  mhash library                  mhash(3)
 
 
 
-mhash 0.8.13                2000/03/23                          2
+mhash 0.8.16                2000/03/23                          2
 
 
 
@@ -193,7 +193,7 @@ AAPPII FFUUNNCCTTIIOONNSS
 
 
 
-mhash 0.8.13                2000/03/23                          3
+mhash 0.8.16                2000/03/23                          3
 
 
 
@@ -259,7 +259,7 @@ mhash(3)                  mhash library                  mhash(3)
 
 
 
-mhash 0.8.13                2000/03/23                          4
+mhash 0.8.16                2000/03/23                          4
 
 
 
@@ -325,7 +325,7 @@ KKEEYYGGEENN AAPPII FFUUNNCCTTIIOONNSS
 
 
 
-mhash 0.8.13                2000/03/23                          5
+mhash 0.8.16                2000/03/23                          5
 
 
 
@@ -340,7 +340,7 @@ mhash(3)                  mhash library                  mhash(3)
            internally (eg. KEYGEN_S2K_ISALTED).  The generated
            keyword is stored in _k_e_y_w_o_r_d, which should be (at
            least) _k_e_y_s_i_z_e bytes long.  The generated keyword is a
-           binary one.
+           binary one. Returns a negative number on failure.
 
        int mmhhaasshh__kkeeyyggeenn__uusseess__ssaalltt( keygenid _a_l_g_o_r_i_t_h_m);
            This function returns 1 if the specified key
@@ -391,7 +391,7 @@ EEXXAAMMPPLLEE
 
 
 
-mhash 0.8.13                2000/03/23                          6
+mhash 0.8.16                2000/03/23                          6
 
 
 
@@ -409,7 +409,7 @@ mhash(3)                  mhash library                  mhash(3)
                int i;
                MHASH td;
                unsigned char buffer;
-               unsigned char *hash;
+               unsigned char hash[16]; /* enough size for MD5 */
 
                td = mhash_init(MHASH_MD5);
 
@@ -419,7 +419,7 @@ mhash(3)                  mhash library                  mhash(3)
                        mhash(td, &buffer, 1);
                }
 
-               hash = mhash_end(td);
+               mhash_deinit(td, hash);
 
                printf("Hash:");
                for (i = 0; i < mhash_get_block_size(MHASH_MD5); i++) {
@@ -445,19 +445,19 @@ EEXXAAMMPPLLEE
                char data[] = "what do ya want for nothing?";
                int datalen = 28;
                MHASH td;
-               unsigned char *mac;
+               unsigned char mac[16];
                int j;
 
                td = mhash_hmac_init(MHASH_MD5, password, keylen,
                                    mhash_get_hash_pblock(MHASH_MD5));
 
                mhash(td, data, datalen);
-               mac = mhash_hmac_end(td);
+               mhash_hmac_deinit(td, mac);
 
 
 
 
-mhash 0.8.13                2000/03/23                          7
+mhash 0.8.16                2000/03/23                          7
 
 
 
@@ -523,6 +523,6 @@ AAUUTTHHOORRSS
 
 
 
-mhash 0.8.13                2000/03/23                          8
+mhash 0.8.16                2000/03/23                          8
 
 

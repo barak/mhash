@@ -35,7 +35,7 @@
 int main()
 {
 
-	char *tmp;
+	char tmp[128];
 	char tmp2[3];
 	char *password;
 	int passlen;
@@ -45,9 +45,9 @@ int main()
 	unsigned char *mac;
 	int j;
 
-	tmp=calloc(1, 2*16);
+	memset(tmp, 0, sizeof(tmp));
 
-	passlen=sizeof(KEY1);
+	passlen=sizeof(KEY1) - 1;
 	password = malloc(passlen+1);
 	memcpy(password, KEY1, passlen);
 	
@@ -74,19 +74,17 @@ int main()
 		fprintf(stderr, "Expecting: 0x%s\nGot: 0x%s\n", DIGEST1, tmp);
 		free(password);
 		free(data);
-		free(tmp);
 		return 1;
 	}
 
 		free(password);
 		free(data);
-		free(tmp);
 	
 	/* Test No 2 */	
 
-	tmp=calloc(1, 2*16);
+	memset( tmp, 0, sizeof(tmp));
 	
-	passlen=sizeof(KEY2);
+	passlen=sizeof(KEY2) - 1;
 	password = malloc(passlen+1);
 	memcpy(password, KEY2, passlen);
 	
@@ -113,14 +111,12 @@ int main()
 		fprintf(stderr, "Expecting: 0x%s\nGot: 0x%s\n", DIGEST2, tmp);
 		free(password);
 		free(data);
-		free(tmp);
 		return 1;
 	}
 
 
 	free(password);
 	free(data);
-	free(tmp);
 
 	fprintf(stderr, "MD5 HMAC-Test: Ok\n");
 

@@ -1,10 +1,38 @@
-mhash ChangeLog ($Date: 2002/03/28 19:32:23 $)
+mhash ChangeLog ($Date: 2004/04/17 21:36:08 $)
 ===============================================================================
 
 People
 
    NM - Nikos Mavroyanopoulos <nmav@hellug.gr>
    SS - Sascha Schumann <sascha@schumann.cx>
+
+Version 0.9.1
+- Added RIPEMD128/256/320, SHA224/384/512, Whirlpool
+- Really, this time!
+  (jkmhash@itaparica.org)
+
+Version 0.8.19
+- Added VC++ project files, contributed by James M. Rogers 
+  <james@singlestep.com>
+
+Version 0.8.18 (released March 6 2003)
+- Several additions and fixes to built win32 dlls.
+
+Version 0.8.17 (released October 4 2002)
+- Corrected the HEX key mode. Refuses to convert hex strings longer
+  than the given key size.
+- Corrected some memory leaks in keygen_s2k. Patch by Bob Mathews 
+  <bobmathews@alumni.calpoly.edu>
+- Corrected wrong use of sizeof in hmac_test. Reported by Ellis Pritchard
+  <ellispritchard@users.sf.net>
+
+Version 0.8.16 (released May 29 2002)
+- Code cleanups and optimizations
+- Added configure time options to disable certain algorithms
+
+Version 0.8.15 (released May 24 2002)
+- Corrected Iterated S2K
+- Made all static tables constant (pointed out by Darryl Miles <darryl@netbauds.net>)
 
 Version 0.8.14 (release March 28 2002)
 - mhash_deinit() and mhash_hmac_deinit() now accept a null digest parameter
