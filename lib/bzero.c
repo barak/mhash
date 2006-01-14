@@ -20,24 +20,29 @@
 
 
 /*
-   $Id: bzero.c,v 1.1.1.1 2000/04/04 10:34:24 nmav Exp $ 
+   $Id: bzero.c,v 1.3 2004/05/02 20:03:10 imipak Exp $ 
  */
 
 #include "libdefs.h"
+
+/**
+ * Platform-independent memset/bzero wrapper, with a simple implementation in the
+ * event there is no memset or bzero defined.
+ */
 
 void
 mhash_bzero(void *s, int n)
 {
 #ifdef HAVE_MEMSET
-	memset(s, '\0', n);
+	memset(s, (int) '\0', n);
 #else
 #ifdef HAVE_BZERO
 	bzero(s, n);
 #else
-	char *stmp = s;
+	char *stmp = (char *) s;
 
-	for (int i = 0; i < n; i++)
-		stmp[i] = '\0';
+	for (int i = 0; i < n; i++, stmp++)
+		*stmp = '\0';
 
 #endif
 #endif

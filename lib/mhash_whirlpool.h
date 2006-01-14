@@ -10,8 +10,10 @@
  *
  */
 
-#ifndef MHASH_WHIRLPOOL_H_INCLUDED
-#define MHASH_WHIRLPOOL_H_INCLUDED
+#if defined(ENABLE_WHIRLPOOL)
+
+#if !defined(__MHASH_WHIRLPOOL_H_INCLUDED)
+#define __MHASH_WHIRLPOOL_H_INCLUDED
 
 
 #define WHIRLPOOL_DIGEST_SIZE 64
@@ -20,23 +22,25 @@
 
 typedef struct whirlpool_ctx
 {
-  byte buffer[WHIRLPOOL_DATA_SIZE];	   /* buffer of data to hash */
-  word64 hashlen[4];                       /* number of hashed bits (256-bit) */
-  int index;		                   /* index to buffer */
-  word64 hash[WHIRLPOOL_DIGEST_SIZE/8];    /* the hashing state */
+  mutils_word8 buffer[WHIRLPOOL_DATA_SIZE];	   /* buffer of data to hash */
+  mutils_word64 hashlen[4];                       /* number of hashed bits (256-bit) */
+  mutils_word32 index;		                   /* index to buffer */
+  mutils_word64 hash[WHIRLPOOL_DIGEST_SIZE/8];    /* the hashing state */
 } WHIRLPOOL_CTX;
 
 void
 whirlpool_init(struct whirlpool_ctx *ctx);
 
 void
-whirlpool_update(struct whirlpool_ctx *ctx, const byte *data, unsigned length);
+whirlpool_update(struct whirlpool_ctx *ctx, __const mutils_word8 *data, mutils_word32 length);
 
 void
 whirlpool_final(struct whirlpool_ctx *ctx);
 
 void
-whirlpool_digest(const struct whirlpool_ctx *ctx, byte *digest);
+whirlpool_digest(__const struct whirlpool_ctx *ctx, mutils_word8 *digest);
 
 
-#endif   /* MHASH_WHIRLPOOL_H_INCLUDED */
+#endif   /* __MHASH_WHIRLPOOL_H_INCLUDED */
+
+#endif

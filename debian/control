@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: Chris Hanson <cph@debian.org>
 Build-Depends: debhelper (>= 4.0.0), autotools-dev
-Standards-Version: 3.6.1
+Standards-Version: 3.6.2
 
 Package: libmhash2
 Architecture: any

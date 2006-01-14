@@ -24,9 +24,11 @@
  */
 
 /* The SHA224 support was added by B. Poettering in April 2004. */
+
+#if defined(ENABLE_SHA256_SHA224)
  
-#ifndef MHASH_SHA256_SHA224_H_INCLUDED
-#define MHASH_SHA256_SHA224_H_INCLUDED
+#if !defined(__MHASH_SHA256_SHA224_H_INCLUDED)
+#define __MHASH_SHA256_SHA224_H_INCLUDED
 
 
 /* SHA256 and SHA224 */
@@ -40,10 +42,10 @@
 
 typedef struct sha256_sha224_ctx
 {
-  word32 state[_SHA256_SHA224_DIGEST_LENGTH]; /* State variables */
-  word64 bitcount;                            /* Bit counter */
-  byte block[SHA256_SHA224_DATA_SIZE];        /* SHA256/224 data buffer */
-  unsigned int index;                         /* index into buffer */
+  mutils_word32 state[_SHA256_SHA224_DIGEST_LENGTH]; /* State variables */
+  mutils_word64 bitcount;                            /* Bit counter */
+  mutils_word8 block[SHA256_SHA224_DATA_SIZE];        /* SHA256/224 data buffer */
+  mutils_word32 index;                         /* index into buffer */
 } SHA256_SHA224_CTX;
 
 void
@@ -53,17 +55,18 @@ void
 sha224_init(struct sha256_sha224_ctx *ctx);
 
 void
-sha256_sha224_update(struct sha256_sha224_ctx *ctx, const byte *data, 
-		     unsigned length);
+sha256_sha224_update(struct sha256_sha224_ctx *ctx, __const mutils_word8 *data, mutils_word32 length);
 
 void
 sha256_sha224_final(struct sha256_sha224_ctx *ctx);
 
 void
-sha256_digest(const struct sha256_sha224_ctx *ctx, byte *digest);
+sha256_digest(__const struct sha256_sha224_ctx *ctx, mutils_word8 *digest);
 
 void
-sha224_digest(const struct sha256_sha224_ctx *ctx, byte *digest);
+sha224_digest(__const struct sha256_sha224_ctx *ctx, mutils_word8 *digest);
 
 
-#endif /* MHASH_SHA256_SHA224_H_INCLUDED */
+#endif /* __MHASH_SHA256_SHA224_H_INCLUDED */
+
+#endif

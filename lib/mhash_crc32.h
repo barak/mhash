@@ -1,11 +1,15 @@
-#ifndef MHASH_CRC32_H
-#define MHASH_CRC32_H
+#if defined(ENABLE_CRC32)
+
+#if !defined(__MHASH_CRC32_H)
+#define __MHASH_CRC32_H
 
 #include "libdefs.h"
 
-void mhash_clear_crc32(word32 * crc);
-void mhash_get_crc32( const word32 * crc, void* ret);
-void mhash_crc32(word32 * crc, const void *, int);
-void mhash_crc32b(word32 * crc, const void *, int);
+void mhash_clear_crc32(mutils_word32 * crc);
+void mhash_get_crc32( __const mutils_word32 * crc, void* ret);
+void mhash_crc32(mutils_word32 * crc, __const void *, mutils_word32);
+void mhash_crc32b(mutils_word32 * crc, __const void *, mutils_word32);
+
+#endif
 
 #endif

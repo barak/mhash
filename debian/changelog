@@ -1,3 +1,13 @@
+mhash (0.9.4a-1) unstable; urgency=low
+
+  * New upstream version.  (closes: Bug#342678)
+  * patch upstream version: restore missing include file.
+  * debian/copyright: update FSF address.
+  * debian/control: bump standards-version (no changes).
+  * debian/libmhash-dev.files: make sure all include files are moved.
+
+ -- Chris Hanson <cph@debian.org>  Fri, 13 Jan 2006 23:24:34 -0500
+
 mhash (0.9.1-1) unstable; urgency=low
 
   * New upstream version.  (closes: Bug#263093)

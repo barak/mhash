@@ -1,5 +1,5 @@
-usr/include/mhash.h
+usr/include
 usr/lib/libmhash.a
 usr/lib/libmhash.la
 usr/lib/libmhash.so
-usr/share/man/man3/mhash.3
+usr/share

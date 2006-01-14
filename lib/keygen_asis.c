@@ -20,13 +20,19 @@
 
 
 
-#include "libdefs.h"
+#include <libdefs.h>
 
-int _mhash_gen_key_asis(void *keyword, int key_size, unsigned char *password, int plen)
+mutils_error _mhash_gen_key_asis(void *keyword, mutils_word32 key_size, mutils_word8 *password, mutils_word32 plen)
 {
-	if (plen>key_size) plen=key_size;
-	memset( keyword, 0, key_size);
-	memcpy( keyword, password, plen);
-	return 0;
-}
+#if defined(MHASH_ROBUST)
+	if ((keyword == NULL) || (keysize == 0) ||
+	    (password == NULL) || (plen == 0))
+		return(-MUTILS_INVALID_LENGTH);
+#endif
 
+	if (plen > key_size)
+		plen=key_size;
+	mutils_bzero(keyword, key_size);
+	mutils_memcpy(keyword, password, plen);
+	return(MUTILS_OK);
+}
