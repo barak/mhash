@@ -1,3 +1,17 @@
+mhash (0.9.6-1) unstable; urgency=low
+
+  * New upstream version.  The last release opened several bugs (348604
+    354206 350088) against this package, which remain open upstream.
+    Please test and report the results back to BTS, as upstream needs to
+    hear from us.  (Thanks to Marc Haber for forwarding the bug reports
+    upstream -- I've been swamped with work and am having trouble keeping
+    up.)
+  * Patch <mhash.h> to work around problem with VERSION.  Fixes #356490,
+    but the bug remains open.  I will reduce its severity until it is
+    fixed upstream.
+
+ -- Chris Hanson <cph@debian.org>  Tue, 21 Mar 2006 00:32:06 -0500
+
 mhash (0.9.4a-1) unstable; urgency=low
 
   * New upstream version.  (closes: Bug#342678)

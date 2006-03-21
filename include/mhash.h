@@ -7,5 +7,8 @@
 #include <mutils/mutils.h>
 #include <mutils/mhash.h>
 
+/* Kludge to work around upstream bug: */
+#undef VERSION
+
 #endif
 
