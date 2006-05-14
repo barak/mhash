@@ -22,7 +22,7 @@ ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 else
     CFLAGS := -O2
 endif
-CFLAGS += -g
+CFLAGS += -g -DMHASH_ROBUST
 
 configure: configure-stamp
 configure-stamp: autotools

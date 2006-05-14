@@ -188,7 +188,7 @@ mhash_crc32(mutils_word32 *crc, __const void *given_buf, mutils_word32 len)
 	__const mutils_word8 *p;
 
 #if defined(MHASH_ROBUST)	
-	if ((crc == NULL) || (given_buffer == NULL) || (len == 0))
+	if ((crc == NULL) || (given_buf == NULL) || (len == 0))
 		return;
 #endif
 
@@ -203,7 +203,7 @@ mhash_crc32b(mutils_word32 *crc, __const void *buf, mutils_word32 len)
 	__const mutils_word8 *p;
 
 #if defined(MHASH_ROBUST)
-	if ((crc == NULL) || (given_buffer == NULL) || (len == 0))
+	if ((crc == NULL) || (buf == NULL) || (len == 0))
 		return;
 #endif
 

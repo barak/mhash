@@ -1,3 +1,16 @@
+mhash (0.9.6-2) unstable; urgency=low
+
+  * Attempt to fix #350088.  This patch looks correct when compared to
+    version 0.9.1, so please test and report back to BTS.
+  * debian/rules: Define MHASH_ROBUST when making package; this should
+    convert segfaults (e.g. from #350088) into errors.
+  * Considerably complicate patch to <mhash.h> in order to fix problems
+    caused by previous patch.
+  * Patch upstream typos in several files.
+  * Bump standards-version to 3.7.2 (no changes).
+
+ -- Chris Hanson <cph@debian.org>  Sun, 14 May 2006 01:03:43 -0400
+
 mhash (0.9.6-1) unstable; urgency=low
 
   * New upstream version.  The last release opened several bugs (348604

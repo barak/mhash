@@ -25,9 +25,9 @@
 mutils_error _mhash_gen_key_asis(void *keyword, mutils_word32 key_size, mutils_word8 *password, mutils_word32 plen)
 {
 #if defined(MHASH_ROBUST)
-	if ((keyword == NULL) || (keysize == 0) ||
+	if ((keyword == NULL) || (key_size == 0) ||
 	    (password == NULL) || (plen == 0))
-		return(-MUTILS_INVALID_LENGTH);
+		return(-MUTILS_INVALID_SIZE);
 #endif
 
 	if (plen > key_size)

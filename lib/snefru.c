@@ -728,7 +728,7 @@ static void snefru(mutils_word32 *block, mutils_word32 len)
 	mutils_word32 isave[SNEFRU256_DIGEST_LEN];
 	mutils_word32 *sbox, x;
 	mutils_word32 i, j;
-	mutils_word32 limit;
+	__const mutils_word32 *limit;
 
 	mutils_memcpy(isave, block, SNEFRU256_DIGEST_SIZE);
   
