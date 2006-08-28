@@ -27,6 +27,14 @@
 #define __const const
 #endif 
 
+/*
+ * The vast majority of user code won't care about mutils, so changes to
+ * this helper library API should not result in a change to the MHASH API
+ * version number.
+ */
+
+#define MUTILS_API 20060624
+
 /* FIXME: We're assuming we've a standard integer types header and that it has been included
  * correctly.
  */
@@ -42,19 +50,19 @@
 #define mutils_word16 uint16_t
 #define mutils_word8 uint8_t
 
-#else
+#else /* Ok, we don't have the standard integer type definitions */
 
 #if SIZEOF_UNSIGNED_LONG_INT == 8
-typedef unsigned long mutils_word64;
+typedef unsigned long int mutils_word64;
 #define TIGER_64BIT
 #elif SIZEOF_UNSIGNED_LONG_LONG_INT == 8
-typedef unsigned long long mutils_word64;
+typedef unsigned long long int mutils_word64;
 #else
 #error "Cannot find a 64 bit integer in your system, sorry."
 #endif
 
 #if SIZEOF_UNSIGNED_LONG_INT == 4
-typedef unsigned long mutils_word32;
+typedef unsigned long int mutils_word32;
 #elif SIZEOF_UNSIGNED_INT == 4
 typedef unsigned int mutils_word32;
 #else
@@ -64,7 +72,7 @@ typedef unsigned int mutils_word32;
 #if SIZEOF_UNSIGNED_INT == 2
 typedef unsigned int mutils_word16;
 #elif SIZEOF_UNSIGNED_SHORT_INT == 2
-typedef unsigned short mutils_word16;
+typedef unsigned short int mutils_word16;
 #else
 #error "Cannot find a 16 bit integer in your system, sorry."
 #endif
@@ -75,22 +83,43 @@ typedef unsigned char mutils_word8;
 #error "Cannot find an 8 bit char in your system, sorry."
 #endif
 
-#endif
+#endif /* End of standard integer type declarationsd */
+
+/*
+ * Due to buggy implementations of the boolean headers in some systems,
+ * we have to detect the boolean values seperately from the boolean type.
+ * A big thank you to Heiko Lehmann for spotting the bug. Unfortunately,
+ * this fix may not be enough, as it is only going to work on things the
+ * precompiler knows about.
+ *
+ * Why go to all this trouble over something that should have a standard
+ * value anyway? Because.
+ */
+
+#if defined(false)
+#define MUTILS_FALSE false
+#else
+#if defined(FALSE)
+#define MUTILS_FALSE FALSE
+#else
+#define MUTILS_FALSE 0
+#endif /* FALSE */
+#endif /* false */
+
+#if defined(true)
+#define MUTILS_TRUE true
+#else
+#if defined(TRUE)
+#define MUTILS_TRUE TRUE
+#else
+#define MUTILS_TRUE -1
+#endif /* TRUE */
+#endif /* true */
 
 #if defined(HAVE__BOOL)
-
 #define mutils_boolean _Bool
-
-#define MUTILS_FALSE false
-#define MUTILS_TRUE true
-
 #else
-
 typedef char mutils_boolean;
-
-#define MUTILS_FALSE 0
-#define MUTILS_TRUE -1
-
 #endif
 
 /*
@@ -121,6 +150,61 @@ typedef enum __mutils_error_codes
 
 #include <mutils/mglobal.h>
 
+/* Some useful endian macros */
+
+#define mutils_swapendian32(a) \
+	((mutils_word32) \
+		(((a & (mutils_word32) 0x000000ffU) << 24) | \
+		 ((a & (mutils_word32) 0x0000ff00U) << 8)  | \
+		 ((a & (mutils_word32) 0x00ff0000U) >> 8)  | \
+		 ((a & (mutils_word32) 0xff000000U) >> 24))  \
+	)
+
+#define mutils_swapendian16(a) \
+	((mutils_word16) \
+		(((a & (mutils_word16) 0x00ffU) << 8) | \
+		 ((a & (mutils_word16) 0xff00U) >> 8))  \
+	 )
+
+/* Change the endianness of the data if (and only if) the data type we want
+ * is the opposite from the native endianness. This allows us to have some
+ * reasonably generic macros, provided we always start from the native
+ * ordering.
+ */
+
+#if defined(WORDS_BIGENDIAN)
+
+#define mutils_lend32(n) mutils_swapendian32(n)
+#define mutils_lend16(n) mutils_swapendian16(n)
+
+#define mutils_bend32(n) n
+#define mutils_bend16(n) n
+
+#define mutils_lend2sys32(n) mutils_swapendian32(n)
+#define mutils_lend2sys16(n) mutils_swapendian16(n)
+
+#define mutils_bend2sys32(n) n
+#define mutils_bend2sys16(n) n
+
+#else
+
+#define mutils_lend32(n) n
+#define mutils_lend16(n) n
+
+#define mutils_bend32(n) mutils_swapendian32(n)
+#define mutils_bend16(n) mutils_swapendian16(n)
+
+#define mutils_lend2sys32(n) n
+#define mutils_lend2sys16(n) n
+
+#define mutils_bend2sys32(n) mutils_swapendian32(n)
+#define mutils_bend2sys16(n) mutils_swapendian16(n)
+
+#endif
+
+int mutils_mlock(__const void *addr, __const mutils_word32 len);
+int mutils_munlock(__const void *addr, __const mutils_word32 len);
+
 void *mutils_malloc(__const mutils_word32 n);
 void mutils_free(__const void *ptr);
 
@@ -146,5 +230,4 @@ mutils_word32 *mutils_word32nswap(mutils_word32 *x, mutils_word32 n, mutils_bool
 mutils_word8 *mutils_asciify(mutils_word8 *in, __const mutils_word32 len);
 mutils_boolean mutils_thequals(mutils_word8 *text, mutils_word8 *hash, __const mutils_word32 len);
 
-#endif
-
+#endif /* __MUTILS_H */

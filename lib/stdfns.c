@@ -33,6 +33,42 @@
  */
 
 WIN32DLL_DEFINE
+int mutils_mlock(__const void *addr, __const mutils_word32 len)
+{
+	int ret;
+
+	if ((addr == NULL) || (len == 0))
+	{
+		ret = -1;
+		errno = EINVAL;
+	}
+
+#if defined(HAVE_MLOCK)
+	ret = mlock(addr, len);
+#endif
+
+	return(ret);
+}
+
+WIN32DLL_DEFINE
+int mutils_munlock(__const void *addr, __const mutils_word32 len)
+{
+	int ret;
+
+	if ((addr == NULL) || (len == 0))
+	{
+		ret = -1;
+		errno = EINVAL;
+	}
+
+#if defined(HAVE_MLOCK)
+	ret = munlock(addr, len);
+#endif
+
+	return(ret);
+}
+
+WIN32DLL_DEFINE
 void *
 mutils_malloc(__const mutils_word32 n)
 {
@@ -154,32 +190,27 @@ mutils_memcpy(void *dest, __const void *src, __const mutils_word32 n)
 	}
 }
 
-#define MIX32(a) \
-	((mutils_word32) \
-		(((a & (mutils_word32) 0x000000ffU) << 24) | \
-		 ((a & (mutils_word32) 0x0000ff00U) << 8) | \
-		 ((a & (mutils_word32) 0x00ff0000U) >> 8) | \
-		 ((a & (mutils_word32) 0xff000000U) >> 24)) \
-	)
-
 /*
-   Byte swap a 32bit integer 
+ * If the system ordering is big-endian, convert to little-endian format.
+ * In both cases, the data is held in a temporary workspace that will be
+ * overwritten the next time this function is called. This function is
+ * deprecated and should NOT be called in new code. The ordering macros
+ * should be used instead, for all single-word conversions.
  */
 WIN32DLL_DEFINE
 mutils_word32
 mutils_word32swap(mutils_word32 x)
 {
-#if defined(WORDS_BIGENDIAN)
-	mutils_word32 out = MIX32(x);
+	static mutils_word32 value;
 
-	return(out);
-#else
-	return(x);
-#endif
+	value = mutils_lend32(x);
+	return(value);
 }
 
 /*
-   Byte swap a series of 32-bit integers
+ * Byte swap a series of 32-bit integers. If destructive is set to false, the
+ * output will be placed in a freshly malloc()'ed buffer and the original
+ * data will remain intact.
  */
 WIN32DLL_DEFINE
 mutils_word32 *
@@ -187,16 +218,17 @@ mutils_word32nswap(mutils_word32 *x, mutils_word32 n, mutils_boolean destructive
 {
 	mutils_word32 loop;
 	mutils_word32 *buffer;
-	mutils_word32 *ptr;
+	mutils_word32 *ptrIn;
+	mutils_word32 *ptrOut;
+	mutils_word32 count = n * 4;
 
 	if (destructive == MUTILS_FALSE)
 	{
-		buffer = mutils_malloc(n * 4);
+		buffer = mutils_malloc(count);
 		if (buffer == NULL)
 		{
 			return(NULL);
 		}
-		mutils_memcpy(buffer, x, n * 4);
 	}
 	else
 	{
@@ -204,16 +236,14 @@ mutils_word32nswap(mutils_word32 *x, mutils_word32 n, mutils_boolean destructive
 	}
 
 /*
- * Even though this doesn't do anything for little-endian machines, the non-destructive
- * version is intended to always return a fresh buffer, NOT the original buffer.
+ * This loop is totally useless for destructive processing of little-endian
+ * data on a little-endian machine.
  */
 
-#if defined(WORDS_BIGENDIAN)
-	for (loop = 0, ptr = buffer; loop < n; loop++, ptr++)
+	for (loop = 0, ptrIn = x, ptrOut = buffer; loop < n; loop++, ptrOut++, ptrIn++)
 	{
-		*ptr = MIX32(*ptr);
+		*ptrOut = mutils_lend32(*ptrIn);
 	}
-#endif
 
 	return(buffer);
 }
@@ -438,33 +468,8 @@ mutils_val2char(mutils_word8 x)
 
 	static mutils_word8 *table = "0123456789abcdef";
 
-	out2 = *(table + x);
+	out = *(table + x);
 
-	switch(x)
-	{
-		case 0x0 : { out = '0'; break; }
-		case 0x1 : { out = '1'; break; }
-		case 0x2 : { out = '2'; break; }
-		case 0x3 : { out = '3'; break; }
-		case 0x4 : { out = '4'; break; }
-		case 0x5 : { out = '5'; break; }
-		case 0x6 : { out = '6'; break; }
-		case 0x7 : { out = '7'; break; }
-		case 0x8 : { out = '8'; break; }
-		case 0x9 : { out = '9'; break; }
-		case 0xa : { out = 'a'; break; }
-		case 0xb : { out = 'b'; break; }
-		case 0xc : { out = 'c'; break; }
-		case 0xd : { out = 'd'; break; }
-		case 0xe : { out = 'e'; break; }
-		case 0xf : { out = 'f'; break; }
-	}
-
-	if (out2 != out)
-	  {
-	    printf("ERROR!\n");
-	    exit(1);
-	  }
 	return(out);
 }
 
@@ -508,3 +513,4 @@ mutils_thequals(mutils_word8 *text, mutils_word8 *hash, __const mutils_word32 le
 	}
 	return(MUTILS_TRUE);
 }
+

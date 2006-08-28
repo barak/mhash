@@ -175,11 +175,13 @@ mhash_get_crc32(__const mutils_word32 *crc, void *ret)
 	/*
 	 * transmit complement, per CRC-32 spec 
 	 */
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN)
 	tmp = mutils_word32swap(tmp);
 #endif
 	if (ret != NULL)
+	{
 		mutils_memcpy(ret, &tmp, sizeof(mutils_word32));	
+	}
 }
 
 void
@@ -187,28 +189,31 @@ mhash_crc32(mutils_word32 *crc, __const void *given_buf, mutils_word32 len)
 {
 	__const mutils_word8 *p;
 
-#if defined(MHASH_ROBUST)	
 	if ((crc == NULL) || (given_buf == NULL) || (len == 0))
+	{
 		return;
-#endif
+	}
 
-	for (p = given_buf; len > 0; ++p, --len) {
+	for (p = given_buf; len > 0; ++p, --len)
+	{
 		(*crc) = ((*crc) << 8) ^ crc32_table[((*crc) >> 24) ^ *p];
 	}
 }
 
 void
-mhash_crc32b(mutils_word32 *crc, __const void *buf, mutils_word32 len)
+mhash_crc32b(mutils_word32 *crc, __const void *given_buf, mutils_word32 len)
 {
 	__const mutils_word8 *p;
 
-#if defined(MHASH_ROBUST)
-	if ((crc == NULL) || (buf == NULL) || (len == 0))
+	if ((crc == NULL) || (given_buf == NULL) || (len == 0))
+	{
 		return;
-#endif
+	}
 
-	for (p = buf; len > 0; ++p, --len)
+	for (p = given_buf; len > 0; ++p, --len)
+	{
 		(*crc) = (((*crc) >> 8) & 0x00FFFFFF) ^ crc32_table_b[(*crc ^ *p) & 0xff];
+	}
 }
 
 #endif /* ENABLE_CRC32 */

@@ -39,18 +39,29 @@ mutils_error _mhash_gen_key_s2k_simple(hashid algorithm,
 	MHASH td;
 	mutils_word32 block_size = mhash_get_block_size(algorithm);
 
+	/* This should never happen, so naturally it is bound to. */
+
+	if (block_size == 0)
+	{
+		errno = EINVAL;
+		return(-MUTILS_INVALID_SIZE);
+	}
+
 	times = key_size / block_size;
 
-	if (key_size % block_size != 0) times++;
+	if (key_size % block_size != 0)
+	{
+		times++;
+	}
 
 	total = times * block_size;
 
 	key = mutils_malloc(total);
 
-#if defined(MHASH_ROBUST)
 	if (key == NULL)
+	{
 		return(-MUTILS_SYSTEM_RESOURCE_ERROR); /* or what? */
-#endif
+	}
 
 	mutils_bzero(key, total);
 
@@ -62,7 +73,9 @@ mutils_error _mhash_gen_key_s2k_simple(hashid algorithm,
 		}
 		
 		for (j = 0; j < i; j++)
+		{
 			mhash(td, &null, 1);
+		}
 		mhash(td, password, plen);
 		mhash_deinit(td, digest);
 
@@ -92,12 +105,16 @@ mutils_error _mhash_gen_key_s2k_salted(hashid algorithm,
 	mutils_word32 total;
 
 	if (salt == NULL)
+	{
 		return(-MUTILS_INVALID_INPUT_BUFFER);
+	}
 
 	if (salt_size < 8)
+	{
 	  	return(-MUTILS_INVALID_SIZE);	/* This algorithm will use EXACTLY
 						 * 8 bytes salt.
 						 */
+	}
 
 	times = key_size / block_size;
 

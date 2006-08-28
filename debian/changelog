@@ -1,3 +1,15 @@
+mhash (0.9.7-1~bpo.1) sarge-backports; urgency=low
+
+  * backport to sarge
+
+ -- Tom Geissler <Tom@d7031.de>  Mon, 28 Aug 2006 20:41:50 +0200
+
+mhash (0.9.7-1) unstable; urgency=low
+
+  * New upstream version.
+
+ -- Chris Hanson <cph@debian.org>  Sun, 25 Jun 2006 21:49:23 -0400
+
 mhash (0.9.6-3) unstable; urgency=low
 
   * Fix VERSION problem by renaming that variable to MHASH_VERSION.
