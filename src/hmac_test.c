@@ -19,6 +19,7 @@
  */
 
 
+#define MUTILS_USE_MHASH_CONFIG
 #include <mhash.h>
 
 #define KEY1 "Jefe"

@@ -25,7 +25,10 @@
 
 /* $Id: mhash.h,v 1.2 2006/01/09 07:27:04 imipak Exp $ */
 
+#if defined(MUTILS_USE_MHASH_CONFIG)
 #include <mutils/mhash_config.h>
+#endif
+
 #include <mutils/mglobal.h>
 #include <mutils/mutils.h>
 #include <mutils/mtypes.h>

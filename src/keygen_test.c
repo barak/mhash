@@ -19,7 +19,7 @@
  */
 
 
-
+#define MUTILS_USE_MHASH_CONFIG
 #include <mhash.h>
 
 #define PASSWORD1 "Hello there"

@@ -6,6 +6,16 @@ People
    NM - Nikos Mavroyanopoulos <nmav@hellug.gr>
    SS - Sascha Schumann <sascha@schumann.cx>
 
+Version 0.9.9
+- Added patch for sigbus error on unaligned data, when doing rapid copies.
+  (Thanks to Wayne - mhash@useunix.net - for that.)
+
+Version 0.9.8.1
+- Another round of bugfixes
+
+Version 0.9.8
+- As before - more patches and cleanups
+
 Version 0.9.7
 - More patches, more cleanups. Better handling of endian issues. Should
   handle platforms that do weird things with booleans better. Eliminated

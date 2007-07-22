@@ -35,6 +35,7 @@
  * properly.
  */
 
+#define MUTILS_USE_MHASH_CONFIG
 #include <mhash.h>
 
 #define MAX_DIGEST_SIZE 256

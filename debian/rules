@@ -48,7 +48,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp configure-stamp
 	-rm -rf static shared
-	-$(MAKE) distclean
+	[ ! -f src/Makefile ] || $(MAKE) distclean
 	dh_clean
 
 install: build

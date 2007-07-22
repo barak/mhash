@@ -1,3 +1,14 @@
+mhash (0.9.9-1) unstable; urgency=low
+
+  * New upstream version.
+    - No longer contains non-free RFCs.  (closes: Bug#393398)
+  * debian/rules: eliminate lintian warning
+    debian-rules-ignores-make-clean-error.
+  * debian/control: eliminate lintial error
+    not-binnmuable-any-depends-any.
+
+ -- Chris Hanson <cph@debian.org>  Sat, 21 Jul 2007 22:15:39 -0400
+
 mhash (0.9.7.dfsg-1.1) unstable; urgency=low
 
   * Non-maintainer upload.

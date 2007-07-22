@@ -96,31 +96,31 @@ typedef unsigned char mutils_word8;
  * value anyway? Because.
  */
 
-#if defined(false)
-#define MUTILS_FALSE false
-#else
-#if defined(FALSE)
-#define MUTILS_FALSE FALSE
-#else
-#define MUTILS_FALSE 0
-#endif /* FALSE */
-#endif /* false */
-
-#if defined(true)
-#define MUTILS_TRUE true
-#else
-#if defined(TRUE)
-#define MUTILS_TRUE TRUE
-#else
-#define MUTILS_TRUE -1
-#endif /* TRUE */
-#endif /* true */
-
 #if defined(HAVE__BOOL)
 #define mutils_boolean _Bool
 #else
 typedef char mutils_boolean;
 #endif
+
+#if defined(false)
+#define MUTILS_FALSE (mutils_boolean) false
+#else
+#if defined(FALSE)
+#define MUTILS_FALSE (mutils_boolean) FALSE
+#else
+#define MUTILS_FALSE (mutils_boolean) 0
+#endif /* FALSE */
+#endif /* false */
+
+#if defined(true)
+#define MUTILS_TRUE (mutils_boolean) true
+#else
+#if defined(TRUE)
+#define MUTILS_TRUE (mutils_boolean) TRUE
+#else
+#define MUTILS_TRUE (mutils_boolean) -1
+#endif /* TRUE */
+#endif /* true */
 
 /*
  * Other than OK, the only defined values should be for a category of error.
@@ -150,7 +150,20 @@ typedef enum __mutils_error_codes
 
 #include <mutils/mglobal.h>
 
-/* Some useful endian macros */
+/*
+ * Some useful, generic endian macros.
+ */
+
+#define mutils_swapendian64(x) \
+	((mutils_word64) \
+		(((x) & 0xff00000000000000ull) >> 56) |	\
+		(((x) & 0x00ff000000000000ull) >> 40) |	\
+		(((x) & 0x0000ff0000000000ull) >> 24) | \
+		(((x) & 0x000000ff00000000ull) >>  8) | \
+		(((x) & 0x00000000ff000000ull) <<  8) | \
+		(((x) & 0x0000000000ff0000ull) << 24) | \
+		(((x) & 0x000000000000ff00ull) << 40) | \
+	 	(((x) & 0x00000000000000ffull) << 56))
 
 #define mutils_swapendian32(a) \
 	((mutils_word32) \
@@ -166,6 +179,8 @@ typedef enum __mutils_error_codes
 		 ((a & (mutils_word16) 0xff00U) >> 8))  \
 	 )
 
+
+
 /* Change the endianness of the data if (and only if) the data type we want
  * is the opposite from the native endianness. This allows us to have some
  * reasonably generic macros, provided we always start from the native
@@ -174,12 +189,15 @@ typedef enum __mutils_error_codes
 
 #if defined(WORDS_BIGENDIAN)
 
+#define mutils_lend64(n) mutils_swapendian64(n)
 #define mutils_lend32(n) mutils_swapendian32(n)
 #define mutils_lend16(n) mutils_swapendian16(n)
 
+#define mutils_bend64(n) n
 #define mutils_bend32(n) n
 #define mutils_bend16(n) n
 
+#define mutils_lend2sys64(n) mutils_swapendian64(n)
 #define mutils_lend2sys32(n) mutils_swapendian32(n)
 #define mutils_lend2sys16(n) mutils_swapendian16(n)
 
@@ -188,15 +206,19 @@ typedef enum __mutils_error_codes
 
 #else
 
+#define mutils_lend64(n) n
 #define mutils_lend32(n) n
 #define mutils_lend16(n) n
 
+#define mutils_bend64(n) mutils_swapendian64(n)
 #define mutils_bend32(n) mutils_swapendian32(n)
 #define mutils_bend16(n) mutils_swapendian16(n)
 
+#define mutils_lend2sys64(n) n
 #define mutils_lend2sys32(n) n
 #define mutils_lend2sys16(n) n
 
+#define mutils_bend2sys64(n) mutils_swapendian64(n)
 #define mutils_bend2sys32(n) mutils_swapendian32(n)
 #define mutils_bend2sys16(n) mutils_swapendian16(n)
 
@@ -206,8 +228,8 @@ int mutils_mlock(__const void *addr, __const mutils_word32 len);
 int mutils_munlock(__const void *addr, __const mutils_word32 len);
 
 void *mutils_malloc(__const mutils_word32 n);
+void *mutils_realloc(__const void *ptr, __const mutils_word32 n);
 void mutils_free(__const void *ptr);
-
 void mutils_bzero(void *s, __const mutils_word32 n);
 
 void mutils_memset(void *dest, __const mutils_word8 c, __const mutils_word32 n);
