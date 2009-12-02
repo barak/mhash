@@ -143,7 +143,7 @@ typedef enum __mutils_error_codes
 	MUTILS_INVALID_PASSES,
 	MUTILS_INVALID_FORMAT,
 	MUTILS_INVALID_SIZE,
-	MUTILS_INVALID_RESULT,
+	MUTILS_INVALID_RESULT
 } mutils_error_codes;
 
 #define mutils_error mutils_word32

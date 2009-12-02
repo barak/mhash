@@ -2,8 +2,8 @@ Source: mhash
 Section: libs
 Priority: optional
 Maintainer: Chris Hanson <cph@debian.org>
-Build-Depends: debhelper (>= 4.0.0), autotools-dev
-Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 5.0.0), autotools-dev
+Standards-Version: 3.8.3
 
 Package: libmhash2
 Architecture: any

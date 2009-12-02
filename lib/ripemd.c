@@ -56,10 +56,10 @@
 #define ROTL(n,X)  (((X)<<(n))|((X)>>(32-(n))))
 
 #define f0(x,y,z)  (x^y^z)
-//#define f16(x,y,z) ((x&y)|(~(x) & z))
+/* #define f16(x,y,z) ((x&y)|(~(x) & z)) */
 #define f16(x,y,z) ((z)^((x)&((y)^(z))))
 #define f32(x,y,z) ((x|~(y))^z)
-//#define f48(x,y,z) ((x&z)|(y&~(z)))
+/* #define f48(x,y,z) ((x&z)|(y&~(z))) */
 #define f48(x,y,z) ((y)^((z)&((x)^(y))))
 #define f64(x,y,z) (x^(y|(~z)))
 

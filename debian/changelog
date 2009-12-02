@@ -1,3 +1,16 @@
+mhash (0.9.9.9-1) unstable; urgency=low
+
+  * New upstream version.
+  * include/mutils/mhash_config.h.in: Remove PACKAGE_ variables from
+    include file.  (closes: Bug#473204)
+  * include/mutils/mhash.h: Manually patch mhash_get_hash_name to return
+    "char *".  (closes: Bug#354206)
+  * debian/control: Bump standards-version to 3.8.3 (no changes).
+  * Remove unused maintainer scripts.
+  * debian/control, debian/compat: Use debhelper version 5.
+
+ -- Chris Hanson <cph@debian.org>  Wed, 02 Dec 2009 02:56:36 -0800
+
 mhash (0.9.9-1) unstable; urgency=low
 
   * New upstream version.
