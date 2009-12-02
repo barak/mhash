@@ -55,7 +55,7 @@ typedef struct mhash_hash_entry mhash_hash_entry;
 
 mutils_word32 mhash_count(void);
 mutils_word32 mhash_get_block_size(hashid type);
-mutils_word8 *mhash_get_hash_name(hashid type);
+char *mhash_get_hash_name(hashid type);
 void mhash_free(void *ptr);
 
 __const mutils_word8 *mhash_get_hash_name_static(hashid type);
