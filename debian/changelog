@@ -1,3 +1,10 @@
+mhash (0.9.9.9-1.1) unstable; urgency=low
+
+  * NMU
+  * lib/{whirlpool,snefru}.c: Fix mhash_deinit segfaults when digest is NULL
+
+ -- Chow Loong Jin <hyperair@debian.org>  Mon, 09 Jan 2012 20:32:32 +0800
+
 mhash (0.9.9.9-1) unstable; urgency=low
 
   * New upstream version.
