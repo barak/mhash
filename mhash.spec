@@ -2,7 +2,7 @@
 
 Summary: Thread-safe hash library
 Name: mhash
-Version: 0.8.14
+Version: 0.8.18
 Release: 1
 Copyright: LGPL
 Group: System Environment/Libraries
@@ -67,7 +67,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-, root, root)
 %doc AUTHORS COPYING INSTALL ChangeLog NEWS README TODO
 %doc doc/example.c doc/md5-rfc1321.txt doc/mhash.html doc/skid2-authentication
-%{prefix}/man/man3/mhash.3.gz
+%{prefix}/man/man3/mhash.3*
 %{prefix}/lib/*.a
 %{prefix}/lib/*.la
 %{prefix}/lib/*.so

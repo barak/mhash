@@ -18,6 +18,10 @@
  */
 
 
+#include "libdefs.h"
+
+#ifdef ENABLE_ADLER32
+
 #include "mhash_adler32.h"
 
 /* This is the implementation of Manuel Kasper <mk@neon1.net>. 
@@ -28,7 +32,7 @@ void mhash_clear_adler32(word32 * adler)
 	*adler = 0x1;
 }
 
-void mhash_get_adler32(void *ret, const word32 * adler)
+void mhash_get_adler32( const word32 * adler, void* ret)
 {
 	word32 tmp = *adler;
 
@@ -65,3 +69,5 @@ void mhash_adler32(word32 * adler, const void *given_buf, int len)
 	}
 	*adler = (s2 << 16) + s1;
 }
+
+#endif /* ENABLE_ADLER32 */

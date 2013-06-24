@@ -19,11 +19,15 @@
  */
 
 
+#include "libdefs.h"
+
+#ifdef ENABLE_CRC32
+
 #include "mhash_crc32.h"
 
 /* This polynomial ( 0xEDB88320L) DOES generate the same CRC values as ZMODEM and PKZIP
  */
-static word32 crc32_table_b[256] =
+static const word32 crc32_table_b[256] =
 {
 	0x0UL, 0x77073096UL, 0xEE0E612CUL, 0x990951BAUL, 0x76DC419UL,
 	0x706AF48FUL, 0xE963A535UL, 0x9E6495A3UL, 0xEDB8832UL, 0x79DCB8A4UL,
@@ -83,7 +87,7 @@ static word32 crc32_table_b[256] =
 /* This polynomial (0x04c11db7) is used at: AUTODIN II, Ethernet, & FDDI 
  */
 
-static word32 crc32_table[256] =
+static const word32 crc32_table[256] =
 {
 
 	0x00000000UL, 0x04c11db7UL, 0x09823b6eUL, 0x0d4326d9UL,
@@ -155,7 +159,7 @@ static word32 crc32_table[256] =
 
 
 void
-clear_crc32(word32 * crc)
+mhash_clear_crc32(word32 * crc)
 {
 	*crc = 0xffffffff;			
 /*
@@ -164,7 +168,7 @@ clear_crc32(word32 * crc)
 }
 
 void
-get_crc32(void* ret, const word32 * crc)
+mhash_get_crc32( const word32 * crc, void* ret)
 {
 	word32 tmp;
 	tmp = ~(*crc);
@@ -179,7 +183,7 @@ get_crc32(void* ret, const word32 * crc)
 }
 
 void
-crc32(word32 * crc, const void *given_buf, int len)
+mhash_crc32(word32 * crc, const void *given_buf, int len)
 {
 	const unsigned char *p;
 
@@ -189,10 +193,12 @@ crc32(word32 * crc, const void *given_buf, int len)
 }
 
 void
-crc32b(word32 * crc, const void *buf, int len)
+mhash_crc32b(word32 * crc, const void *buf, int len)
 {
 	const byte *p;
 
 	for (p = buf; len > 0; ++p, --len)
 		(*crc) = (((*crc) >> 8) & 0x00FFFFFF) ^ crc32_table_b[(*crc ^ *p) & 0xff];
 }
+
+#endif /* ENABLE_CRC32 */
