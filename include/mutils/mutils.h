@@ -87,7 +87,7 @@ typedef unsigned char mutils_word8;
 
 /*
  * Due to buggy implementations of the boolean headers in some systems,
- * we have to detect the boolean values seperately from the boolean type.
+ * we have to detect the boolean values separately from the boolean type.
  * A big thank you to Heiko Lehmann for spotting the bug. Unfortunately,
  * this fix may not be enough, as it is only going to work on things the
  * precompiler knows about.
