@@ -1,0 +1,266 @@
+1999-10-23  Sascha Schumann  <sascha@schumann.cx>
+
+	* configure.in: Update version (0.6.0 => 0.6.1)
+
+	* NEWS: update
+
+1999-10-21  Nikos Mavroyanopoulos  <nmav@hellug.gr>
+
+	* mhash.c:
+	Bugfix in TIGER algorithm handling.
+
+1999-10-11  Sascha Schumann  <sascha@schumann.cx>
+
+	* README: Update URL to point to the new location of the mhash website.
+
+1999-10-10  Sascha Schumann  <sascha@schumann.cx>
+
+	* doc/Makefile.am: Generate all files in srcdir
+
+	* doc/mhash.pod: Resolve conflicts (accidentially committed).
+
+	* ChangeLog: .
+
+	* NEWS: Update release date
+
+1999-10-10  Nikos Mavroyanopoulos  <nmav@hellug.gr>
+
+	* doc/mhash.pod, mhash.c:
+
+	nmav@hellur.gr -> nmav@hellug.gr
+
+	TIGER is now used in HMAC with block size of 64 bytes.
+
+1999-10-08  Sascha Schumann  <sascha@schumann.cx>
+
+	* ChangeLog: Add last changes
+
+	* doc/Makefile.am: Generate documentation files in srcdir
+
+	* configure.in: Change to final version number
+
+	* NEWS: update
+
+	* ChangeLog: This file contains all changes as tracked by CVS
+
+	* NEWS: This file contains user-visible changes
+
+	* doc/mhash.pod:     Minor editing.
+
+1999-10-04  Nikos Mavroyanopoulos  <nmav@hellug.gr>
+
+	* Makefile.am:
+
+	Added test suite for hmac.
+
+	* hmac_test.c:
+
+	Test program, for the HMAC-MD5 mode.
+
+	* doc/mhash.pod:
+
+	Added description for HMAC functions, and an example.
+
+1999-10-04  Sascha Schumann  <sascha@schumann.cx>
+
+	* buildconf, configure.in:     Heh.
+
+	* configure.in:     Kick out -lpthreads, this doesn't work reliable.
+
+	* mhash.c:     Remove MHASH_ prefix from returned name.
+
+	* .cvsignore:     Updates
+
+	* mhash.c:
+	    libdefs.h includes mhash_config.h which we need before that.
+
+	* buildconf:     Automatically install missing files.
+
+	* config.guess, config.sub, install-sh, ltconfig, ltmain.sh, missing, mkinstalldirs:
+	    Cleanup
+
+	* Makefile.am, configure.in, libdefs.h, mhash.c:     More cleanup
+
+	* ChangeLog, Makefile.am, configure.in, libmhash.sym:
+	    Export only a few symbols.
+
+	* .cvsignore:     acconfig.h is not a generated file.
+
+	* acconfig.h, configure.in, mhash.c:
+	    HAVE_LIBPTHREAD => MHASH_PTHREADS
+
+	* ChangeLog, Makefile.am:     Updates
+
+	* configure.in:
+	    Better POSIX thread checks (works now on Tru64 as well).
+
+	* mhash.c, sha1.c:     .
+
+	* ChangeLog, mhash.c, mhash.h:
+	    Add new hmac function and API cleanup
+
+1999-10-02  Sascha Schumann  <sascha@schumann.cx>
+
+	* ChangeLog, mhash.c:     * improved data structure handling
+	      Submitted by: NM
+
+1999-09-16  Sascha Schumann  <sascha@schumann.cx>
+
+	* ChangeLog: .
+
+	* configure.in: version update
+
+	* acinclude.m4, configure.in, mhash.c: - fix typo wrt hmac
+	- silence libtool
+
+1999-09-13  ralf  <ralf@flaubert.foo.bar>
+
+	* doc/Makefile.am: no message
+
+1999-08-31  Sascha Schumann  <sascha@schumann.cx>
+
+	* mhash.c, mhash.h, ChangeLog: new hmac functions
+
+1999-08-29  Sascha Schumann  <sascha@schumann.cx>
+
+	* LICENSE: .
+
+1999-08-03  Sascha Schumann  <sascha@schumann.cx>
+
+	* LICENSE: update email address
+
+1999-07-14  Sascha Schumann  <sascha@schumann.cx>
+
+	* configure.in: forgot that one
+
+	* ChangeLog: update
+
+	* libdefs.h, mhash.c, mhash_tiger.h, tiger.c, tiger_sboxes.c:
+	final version
+
+	* tiger.c: include 32bit version of Tiger
+
+	* mhash.c: tiger fix
+
+	* ChangeLog: original? should be ugly or unusable
+
+	* ChangeLog: up it to 0.5.2
+
+	* tiger.c: redundant
+
+	* mhash.c: some fixes
+
+	* ChangeLog, ltconfig, ltmain.sh, doc/.cvsignore: update
+
+	* mhash.c: that should work
+
+	* COPYING, bzero.c, crc-32b.c, crc32.c, gosthash.c, gosthash.h, haval.c, md5.c, mhash.c, sha1.c, snefru.c, swap.c, tiger.c, tiger_sboxes.c:
+	fourth batch
+
+	* Makefile.am, NEWS, buildconf, config.guess, config.sub, configure.in, doc/Makefile.am, driver.c, hash_test.sh, libdefs.h, ltconfig, ltmain.sh, mhash.h, mhash_crc32.h, mhash_haval.h, mhash_md5.h, mhash_sha1.h, mhash_tiger.h, rmd128.c, rmd128.h, rmd160.c, rmd160.h:
+	first batch
+
+	* ChangeLog: update
+
+1999-06-22  Sascha Schumann  <sascha@schumann.cx>
+
+	* doc/Makefile.am, doc/mhash.pod: .
+
+1999-06-10  Sascha Schumann  <sascha@schumann.cx>
+
+	* ChangeLog: .
+
+1999-05-21  Sascha Schumann  <sascha@schumann.cx>
+
+	* doc/.cvsignore, doc/Makefile, doc/Makefile.am: cleanup
+
+	* Makefile.am, configure.in, doc/Makefile, doc/mhash.pod: - bugfix
+	- cleanup
+
+	* LICENSE, Makefile.am, README, buildconf, configure.in: many changes
+
+	* doc/mhash.pod, AUTHORS, COPYING, ChangeLog, LICENSE, NEWS, README, TODO:
+	more cleanup
+
+	* doc/Makefile: forgot these
+
+	* doc/.cvsignore, doc/mhash.pod, AUTHORS, COPYING, ChangeLog, Makefile.am, NEWS, README:
+	cleanup
+
+1999-05-18  Sascha Schumann  <sascha@schumann.cx>
+
+	* TODO, configure.in: - clean up
+	- test vectors on make check
+
+	* .cvsignore, stamp-h.in: cleanup
+
+	* Makefile.am, configure.in: - add test driver
+	- more cleanups
+
+	* ChangeLog, Makefile.am, NEWS, configure.in: - change API a little bit
+	- add get_algorithms_name
+	- add snefru source
+	- move headers around (makes distribution process easier)
+
+1999-05-16  Sascha Schumann  <sascha@schumann.cx>
+
+	* ChangeLog: * add GOST
+	* add mhash_get_algorithms_name
+
+	* AUTHORS, Makefile.am: cleanup
+
+	* ChangeLog, configure.in: .
+
+	* configure.in: this is done by another call already
+
+	* .cvsignore: addition
+
+	* ChangeLog, README: * add some algorithms
+	* cleanup
+
+	* .cvsignore, Makefile.in: further cleanup
+
+	* doc/digest.c, doc/md5-rfc1321.txt, doc/sha1.txt, doc/test.c:
+	New file.
+
+	* doc/digest.c, doc/md5-rfc1321.txt, doc/sha1.txt, doc/test.c:
+	derived from libmhash-0.3
+
+	* doc/README.lib: New file.
+
+	* doc/README.lib: derived from libmhash-0.3
+
+	* .cvsignore, AUTHORS, ChangeLog, INSTALL, NEWS, README, buildconf:
+	New file.
+
+	* .cvsignore, AUTHORS, ChangeLog, INSTALL, NEWS, README, buildconf:
+	derived from libmhash-0.3
+
+	* ltmain.sh: New file.
+
+	* ltmain.sh: derived from libmhash-0.3
+
+	* ltconfig: New file.
+
+	* ltconfig: derived from libmhash-0.3
+
+	* config.guess: New file.
+
+	* config.guess: derived from libmhash-0.3
+
+	* config.sub, missing, stamp-h.in: New file.
+
+	* config.sub, missing, stamp-h.in: derived from libmhash-0.3
+
+	* Makefile.in, mkinstalldirs: New file.
+
+	* Makefile.in, mkinstalldirs: derived from libmhash-0.3
+
+	* COPYING: New file.
+
+	* COPYING: derived from libmhash-0.3
+
+	* Makefile.am, install-sh: New file.
+
+	* Makefile.am, install-sh: derived from libmhash-0.3
+

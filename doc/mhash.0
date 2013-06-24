@@ -1,0 +1,330 @@
+
+
+
+mhash(3)                  mhash library                  mhash(3)
+
+
+NNNNAAAAMMMMEEEE
+       mmmmhhhhaaaasssshhhh ---- HHHHaaaasssshhhh LLLLiiiibbbbrrrraaaarrrryyyy
+
+VVVVEEEERRRRSSSSIIIIOOOONNNN
+       mhash 0.6.1
+
+SSSSYYYYNNNNOOOOPPPPSSSSIIIISSSS
+        #include "mhash.h"
+
+        IIIInnnnffffoooorrrrmmmmaaaattttiiiivvvveeee FFFFuuuunnnnccccttttiiiioooonnnnssss
+
+        size_t   mhash_count(void);
+        size_t   mhash_get_block_size(hashid type);
+        char    *mhash_get_hash_name(hashid type);
+        size_t   mhash_get_hash_pblock(hashid type);
+
+        IIIInnnniiiittttiiiiaaaalllliiiizzzziiiinnnngggg FFFFuuuunnnnccccttttiiiioooonnnnssss
+
+        MHASH    mhash_init(hashid type);
+        MHASH    hmac_mhash_init(const hashid type, void *key, int keysize, int block);
+
+        UUUUppppddddaaaatttteeee FFFFuuuunnnnccccttttiiiioooonnnnssss
+
+        int      mhash(MHASH thread, const void *plaintext, size_t size);
+
+        FFFFiiiinnnnaaaalllliiiizzzziiiinnnngggg FFFFuuuunnnnccccttttiiiioooonnnnssss
+
+        void    *mhash_end(MHASH thread);
+        void    *hmac_mhash_end(MHASH thread);
+
+        AAAAvvvvaaaaiiiillllaaaabbbblllleeee HHHHaaaasssshhhheeeessss
+
+        enum hashid {
+               MHASH_CRC32,
+               MHASH_MD5,
+               MHASH_SHA1,
+               MHASH_HAVAL,
+               MHASH_RIPEMD160,
+               MHASH_RIPEMD128,
+               MHASH_SNEFRU,
+               MHASH_TIGER,
+               MHASH_GOST,
+               MHASH_CRC32B
+        };
+
+        typedef enum hashid hashid;
+
+
+DDDDEEEESSSSCCCCRRRRIIIIPPPPTTTTIIIIOOOONNNN
+       The mmmmhhhhaaaasssshhhh library provides an easy to use C interface for
+       several hash algorithms (also known as "one-way"
+       algorithm). These can be used to create checksums, message
+       digests and more. Currently, MD5, SHA1, GOST, TIGER,
+       RIPE-MD160, HAVAL and several other algorithms are
+
+
+
+1999/05/21                 mhash 0.6.1                          1
+
+
+
+
+
+mhash(3)                  mhash library                  mhash(3)
+
+
+       supported.
+
+AAAAPPPPIIII FFFFUUUUNNNNCCCCTTTTIIIIOOOONNNNSSSS
+       We will describe the API of mmmmhhhhaaaasssshhhh in detail now. The order
+       follows the one in the SYNOPSIS directly.
+
+       size_t mmmmhhhhaaaasssshhhh____ccccoooouuuunnnntttt(void);
+           This returns the hashid of the last available hash.
+           Hashes are numbered from 0 to mhash_count().
+
+       size_t mmmmhhhhaaaasssshhhh____ggggeeeetttt____bbbblllloooocccckkkk____ssssiiiizzzzeeee(hashid _t_y_p_e);
+           If _t_y_p_e exists, this returns the used blocksize of the
+           hash _t_y_p_e in bytes. Otherwise, it returns 0.
+
+       char *mmmmhhhhaaaasssshhhh____ggggeeeetttt____hhhhaaaasssshhhh____nnnnaaaammmmeeee(hashid _t_y_p_e);
+           If _t_y_p_e exists, this returns the name of the hash
+           _t_y_p_e. Otherwise, a NULL pointer is returned. The
+           string is allocated with _m_a_l_l_o_c(3) seperately, so do
+           not forget to _f_r_e_e(3) it.
+
+       size_t mmmmhhhhaaaasssshhhh____ggggeeeetttt____hhhhaaaasssshhhh____ppppbbbblllloooocccckkkk(hashid _t_y_p_e);
+           It returns the block size that the algorithm operates.
+           This is used in hmac_mhash_init. If the return value
+           is 0 you shouldn't use that algorithm in HMAC.
+
+       MHASH mmmmhhhhaaaasssshhhh____iiiinnnniiiitttt(hashid _t_y_p_e);
+           This setups a context to begin hashing using the
+           algorithm _t_y_p_e. It returns a descriptor to that
+           context which will result in leaking memory, if you do
+           not call _m_h_a_s_h___e_n_d(3) later. Returns MHASH_FAILED on
+           failure.
+
+       MHASH hhhhmmmmaaaacccc____mmmmhhhhaaaasssshhhh____iiiinnnniiiitttt(const hashid _t_y_p_e, void *_k_e_y, int
+           _k_e_y_s_i_z_e, int _b_l_o_c_k);
+           This setups a context to begin hashing using the
+           algorithm type in HMAC mode.  HMAC is a mechanism for
+           message authentication using cryptographic hash
+           functions, and is described in rfc2104. _k_e_y should be
+           a pointer to the key and _k_e_y_s_i_z_e its len. The _b_l_o_c_k is
+           the block size (in bytes) that hmac o It should be
+           obtained by _m_h_a_s_h___g_e_t___h_a_s_h___p_b_l_o_c_k_(_). If its 0 it
+           defaults to 64.  After calling it you should use
+           _m_h_a_s_h_(_) to update the context.  It returns a
+           descriptor to that context which will result in
+           leaking memory, if you do not call _h_m_a_c___m_h_a_s_h___e_n_d(3)
+           later.  Returns MHASH_FAILED on failure.
+
+           =item int mmmmhhhhaaaasssshhhh(MHASH _t_h_r_e_a_d, const void *_p_l_a_i_n_t_e_x_t,
+           size_t _s_i_z_e);
+
+           This updates the context described by _t_h_r_e_a_d with
+           _p_l_a_i_n_t_e_x_t. _s_i_z_e is the length of _p_l_a_i_n_t_e_x_t which may
+           be binary data.
+
+
+
+
+1999/05/21                 mhash 0.6.1                          2
+
+
+
+
+
+mhash(3)                  mhash library                  mhash(3)
+
+
+       void *mmmmhhhhaaaasssshhhh____eeeennnndddd(MHASH _t_h_r_e_a_d);
+           This frees all resources associated with _t_h_r_e_a_d and
+           returns the result of the whole hashing operation (the
+           ``_d_i_g_e_s_t'').
+
+       void *hhhhmmmmaaaacccc____mmmmhhhhaaaasssshhhh____eeeennnndddd(MHASH _t_h_r_e_a_d);
+           This frees all resources associated with thread and
+           returns the result of the whole hashing operation (the
+           ``_m_a_c'').
+
+
+EEEEXXXXAAAAMMMMPPPPLLLLEEEE
+       Hashing STDIN until EOF.
+
+        #include <mhash.h>
+        #include <stdio.h>
+        #include <stdlib.h>
+
+        int main(void)
+        {
+               int i;
+               MHASH td;
+               unsigned char buffer;
+               unsigned char *hash;
+
+               td = mhash_init(MHASH_MD5);
+
+               if (td == MHASH_FAILED) exit(1);
+
+               while (fread(&buffer, 1, 1, stdin) == 1) {
+                       mhash(td, &buffer, 1);
+               }
+
+               hash = mhash_end(td);
+
+               printf("Hash:");
+               for (i = 0; i < mhash_get_block_size(MHASH_MD5); i++) {
+                       printf("%.2x", hash[i]);
+               }
+               printf("\n");
+
+               exit(0);
+        }
+
+
+EEEEXXXXAAAAMMMMPPPPLLLLEEEE
+       An example program using HMAC:
+
+        #include <mhash.h>
+        #include <stdio.h>
+
+        int main()
+        {
+
+
+
+
+1999/05/21                 mhash 0.6.1                          3
+
+
+
+
+
+mhash(3)                  mhash library                  mhash(3)
+
+
+               char password[] = "Jefe";
+               int keylen = 4;
+               char data[] = "what do ya want for nothing?";
+               int datalen = 28;
+               MHASH td;
+               unsigned char *mac;
+               int j;
+
+               td = hmac_mhash_init(MHASH_MD5, password, keylen,
+                                   mhash_get_hash_pblock(MHASH_MD5));
+
+               mhash(td, data, datalen);
+               mac = hmac_mhash_end(td);
+
+        /*
+         * The output should be 0x750c783e6ab0b503eaa86e310a5db738
+         * according to RFC 2104.
+         */
+
+               printf("0x");
+               for (j = 0; j < mhash_get_block_size(MHASH_MD5); j++) {
+                       printf("%.2x", mac[j]);
+               }
+               printf("\n");
+
+               exit(0);
+        }
+
+
+
+HHHHIIIISSSSTTTTOOOORRRRYYYY
+       This library was originally written by _N_i_k_o_s
+       _M_a_v_r_o_y_a_n_o_p_o_u_l_o_s <nmav@hellug.gr> who passed the project
+       over to _S_a_s_c_h_a _S_c_h_u_m_a_n_n <sascha@schumann.cx> in May 1999.
+
+BBBBUUUUGGGGSSSS
+       If you find any, please send a bug report (preferrably
+       together with a patch) to the maintainer _S_a_s_c_h_a _S_c_h_u_m_a_n_n
+       <sascha@schumann.cx> with a detailed description on how to
+       reproduce the bug.
+
+AAAAUUUUTTTTHHHHOOOORRRR
+       Sascha Schumann <sascha@schumann.cx>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1999/05/21                 mhash 0.6.1                          4
+
+
+
+
+
+mhash(3)                  mhash library                  mhash(3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1999/05/21                 mhash 0.6.1                          5
+
+

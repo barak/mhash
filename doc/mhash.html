@@ -1,0 +1,314 @@
+<HTML>
+<HEAD>
+<TITLE>mhash library</TITLE>
+<LINK REV="made" HREF="mailto:root@flaubert.foo.bar">
+</HEAD>
+
+<BODY>
+
+<!-- INDEX BEGIN -->
+<!--
+
+<UL>
+
+	<LI><A HREF="#NAME">NAME</A>
+	<LI><A HREF="#VERSION">VERSION</A>
+	<LI><A HREF="#SYNOPSIS">SYNOPSIS</A>
+	<LI><A HREF="#DESCRIPTION">DESCRIPTION</A>
+	<LI><A HREF="#API_FUNCTIONS">API FUNCTIONS</A>
+	<LI><A HREF="#EXAMPLE">EXAMPLE</A>
+	<LI><A HREF="#EXAMPLE">EXAMPLE</A>
+	<LI><A HREF="#HISTORY">HISTORY</A>
+	<LI><A HREF="#BUGS">BUGS</A>
+	<LI><A HREF="#AUTHOR">AUTHOR</A>
+</UL>
+-->
+<!-- INDEX END -->
+
+<P>
+<HR>
+<H1><A NAME="NAME">NAME</A></H1>
+<P>
+<STRONG>mhash - Hash Library</STRONG>
+
+
+
+<P>
+<HR>
+<H1><A NAME="VERSION">VERSION</A></H1>
+<P>
+mhash 
+<FONT SIZE=-1>0.6.1</FONT>
+
+<P>
+<HR>
+<H1><A NAME="SYNOPSIS">SYNOPSIS</A></H1>
+<P>
+<PRE> #include &quot;mhash.h&quot;
+</PRE>
+<P>
+<STRONG><PRE> Informative Functions 
+</PRE>
+</STRONG>
+
+
+
+<P>
+<PRE> size_t   mhash_count(void);
+ size_t   mhash_get_block_size(hashid type);
+ char    *mhash_get_hash_name(hashid type);
+ size_t   mhash_get_hash_pblock(hashid type);
+</PRE>
+<P>
+<STRONG><PRE> Initializing Functions 
+</PRE>
+</STRONG>
+
+
+
+<P>
+<PRE> MHASH    mhash_init(hashid type);
+ MHASH    hmac_mhash_init(const hashid type, void *key, int keysize, int block);
+</PRE>
+<P>
+<STRONG><PRE> Update Functions 
+</PRE>
+</STRONG>
+
+
+
+<P>
+<PRE> int      mhash(MHASH thread, const void *plaintext, size_t size);
+</PRE>
+<P>
+<STRONG><PRE> Finalizing Functions 
+</PRE>
+</STRONG>
+
+
+
+<P>
+<PRE> void    *mhash_end(MHASH thread);
+ void    *hmac_mhash_end(MHASH thread);
+</PRE>
+<P>
+<STRONG><PRE> Available Hashes 
+</PRE>
+</STRONG>
+
+
+
+<P>
+<PRE> enum hashid {
+        MHASH_CRC32,
+        MHASH_MD5,
+        MHASH_SHA1,
+        MHASH_HAVAL,
+        MHASH_RIPEMD160,
+        MHASH_RIPEMD128,
+        MHASH_SNEFRU,
+        MHASH_TIGER,
+        MHASH_GOST,
+        MHASH_CRC32B
+ };
+</PRE>
+<P>
+<PRE> typedef enum hashid hashid;
+</PRE>
+<P>
+<HR>
+<H1><A NAME="DESCRIPTION">DESCRIPTION</A></H1>
+<P>
+The <STRONG>mhash</STRONG> library provides an easy to use 
+<FONT SIZE=-1>C</FONT> interface for several hash algorithms (also known as ``one-way'' algorithm). These can be used to create checksums, message digests and more. Currently, 
+<FONT SIZE=-1>MD5,</FONT> 
+<FONT SIZE=-1>SHA1,</FONT> 
+<FONT SIZE=-1>GOST,</FONT> 
+<FONT SIZE=-1>TIGER,</FONT> 
+<FONT SIZE=-1>RIPE-MD160,</FONT> 
+<FONT SIZE=-1>HAVAL</FONT> and several other algorithms are supported.
+
+
+<P>
+<HR>
+<H1><A NAME="API_FUNCTIONS">API FUNCTIONS</A></H1>
+<P>
+We will describe the 
+<FONT SIZE=-1>API</FONT> of <STRONG>mhash</STRONG> in detail now. The order follows the one in the 
+<FONT SIZE=-1>SYNOPSIS</FONT> directly.
+
+<DL>
+<DT><STRONG><A NAME="item_size_t">size_t mhash_count(void);</A></STRONG><DD>
+<P>
+This returns the <CODE>hashid</CODE> of the last available hash. Hashes are numbered from 0 to <CODE>mhash_count()</CODE>.
+
+<DT><STRONG>size_t mhash_get_block_size(hashid type);</STRONG><DD>
+<P>
+If <EM>type</EM> exists, this returns the used blocksize of the hash <EM>type</EM>
+in bytes. Otherwise, it returns 0.
+
+<DT><STRONG><A NAME="item_char">char *mhash_get_hash_name(hashid type);</A></STRONG><DD>
+<P>
+If <EM>type</EM> exists, this returns the name of the hash <EM>type</EM>. Otherwise, a
+<CODE>NULL</CODE> pointer is returned. The string is allocated with <CODE>malloc(3)</CODE>
+seperately, so do not forget to <CODE>free(3)</CODE> it.
+
+<DT><STRONG>size_t mhash_get_hash_pblock(hashid type);</STRONG><DD>
+<P>
+It returns the block size that the algorithm operates. This is used in hmac_mhash_init. If the return value is 0 you shouldn't use that algorithm in 
+<FONT SIZE=-1>HMAC.</FONT>
+
+
+<DT><STRONG><A NAME="item_MHASH">MHASH mhash_init(hashid type);</A></STRONG><DD>
+<P>
+This setups a context to begin hashing using the algorithm <EM>type</EM>. It returns a descriptor to that context which will result in leaking
+memory, if you do not call <CODE>mhash_end(3)</CODE> later. Returns <CODE>MHASH_FAILED</CODE> on failure.
+
+<DT><STRONG>MHASH hmac_mhash_init(const hashid type, void *key, int keysize, int block);</STRONG><DD>
+<P>
+This setups a context to begin hashing using the algorithm type in 
+<FONT SIZE=-1>HMAC</FONT> mode. 
+<FONT SIZE=-1>HMAC</FONT> is a mechanism for message authentication using cryptographic hash functions, and is described in rfc2104.
+ <EM>key</EM> should be a pointer to the key and <EM>keysize</EM> its len. The <EM>block</EM> is the block size (in bytes) that hmac o It should be obtained by
+<CODE>mhash_get_hash_pblock().</CODE> If its 0 it defaults to 64. After
+calling it you should use <CODE>mhash()</CODE> to update the context. It
+returns a descriptor to that context which will result in leaking memory,
+if you do not call <CODE>hmac_mhash_end(3)</CODE> later. Returns <CODE>MHASH_FAILED</CODE> on failure. =item int <STRONG>mhash</STRONG>
+<FONT SIZE=-1>(MHASH</FONT> <EM>thread</EM>, const void *<EM>plaintext</EM>, size_t <EM>size</EM>);
+
+<P>
+This updates the context described by <EM>thread</EM> with <EM>plaintext</EM>. <EM>size</EM> is the length of <EM>plaintext</EM> which may be binary data.
+
+<DT><STRONG><A NAME="item_void">void *mhash_end(MHASH thread);</A></STRONG><DD>
+<P>
+This frees all resources associated with <EM>thread</EM> and returns the result of the whole hashing operation (the ``<EM>digest</EM>'').
+
+<DT><STRONG>void *hmac_mhash_end(MHASH thread);</STRONG><DD>
+<P>
+This frees all resources associated with thread and returns the result of
+the whole hashing operation (the ``<EM>mac</EM>'').
+ 
+
+</DL>
+<P>
+<HR>
+<H1><A NAME="EXAMPLE">EXAMPLE</A></H1>
+<P>
+Hashing 
+<FONT SIZE=-1>STDIN</FONT> until 
+<FONT SIZE=-1>EOF.</FONT>
+
+<P>
+<PRE> #include &lt;mhash.h&gt;
+ #include &lt;stdio.h&gt;
+ #include &lt;stdlib.h&gt;
+</PRE>
+<P>
+<PRE> int main(void) 
+ {
+        int i;
+        MHASH td;
+        unsigned char buffer;
+        unsigned char *hash;
+</PRE>
+<P>
+<PRE>        td = mhash_init(MHASH_MD5);
+</PRE>
+<P>
+<PRE>        if (td == MHASH_FAILED) exit(1);
+</PRE>
+<P>
+<PRE>        while (fread(&amp;buffer, 1, 1, stdin) == 1) {
+                mhash(td, &amp;buffer, 1);
+        }
+</PRE>
+<P>
+<PRE>        hash = mhash_end(td);
+</PRE>
+<P>
+<PRE>        printf(&quot;Hash:&quot;);
+        for (i = 0; i &lt; mhash_get_block_size(MHASH_MD5); i++) {
+                printf(&quot;%.2x&quot;, hash[i]);
+        }
+        printf(&quot;\n&quot;);
+</PRE>
+<P>
+<PRE>        exit(0);
+ }
+</PRE>
+<P>
+<HR>
+<H1><A NAME="EXAMPLE">EXAMPLE</A></H1>
+<P>
+An example program using 
+<FONT SIZE=-1>HMAC:</FONT>
+
+<P>
+<PRE> #include &lt;mhash.h&gt;
+ #include &lt;stdio.h&gt;
+</PRE>
+<P>
+<PRE> int main()
+ {
+</PRE>
+<P>
+<PRE>        char password[] = &quot;Jefe&quot;;
+        int keylen = 4;
+        char data[] = &quot;what do ya want for nothing?&quot;;
+        int datalen = 28;
+        MHASH td;
+        unsigned char *mac;
+        int j;
+ 
+        td = hmac_mhash_init(MHASH_MD5, password, keylen,
+                            mhash_get_hash_pblock(MHASH_MD5));
+</PRE>
+<P>
+<PRE>        mhash(td, data, datalen);
+        mac = hmac_mhash_end(td);
+</PRE>
+<P>
+<PRE> /* 
+  * The output should be 0x750c783e6ab0b503eaa86e310a5db738
+  * according to RFC 2104.
+  */
+</PRE>
+<P>
+<PRE>        printf(&quot;0x&quot;);
+        for (j = 0; j &lt; mhash_get_block_size(MHASH_MD5); j++) {
+                printf(&quot;%.2x&quot;, mac[j]);
+        }
+        printf(&quot;\n&quot;);
+        
+        exit(0);
+ }
+ 
+</PRE>
+<P>
+<HR>
+<H1><A NAME="HISTORY">HISTORY</A></H1>
+<P>
+This library was originally written by <EM>Nikos Mavroyanopoulos</EM>
+&lt;<A HREF="mailto:nmav@hellug.gr>">nmav@hellug.gr></A> who passed the project
+over to <EM>Sascha Schumann</EM>
+&lt;<A HREF="mailto:sascha@schumann.cx">sascha@schumann.cx</A>&gt; in May
+1999.
+
+<P>
+<HR>
+<H1><A NAME="BUGS">BUGS</A></H1>
+<P>
+If you find any, please send a bug report (preferrably together with a
+patch) to the maintainer <EM>Sascha Schumann</EM> &lt;<A HREF="mailto:sascha@schumann.cx">sascha@schumann.cx</A>&gt; with a
+detailed description on how to reproduce the bug.  
+
+<P>
+<HR>
+<H1><A NAME="AUTHOR">AUTHOR</A></H1>
+<P>
+Sascha Schumann &lt;<A
+HREF="mailto:sascha@schumann.cx">sascha@schumann.cx</A>&gt;
+
+</BODY>
+
+</HTML>

@@ -1,0 +1,1 @@
+#undef MHASH_PTHREADS

@@ -1,0 +1,215 @@
+=pod
+
+=head1 NAME
+
+B<mhash - Hash Library>
+
+=head1 VERSION
+
+mhash MHASH_VERSION
+
+=head1 SYNOPSIS
+
+ #include "mhash.h"
+
+B< Informative Functions >
+
+ size_t   mhash_count(void);
+ size_t   mhash_get_block_size(hashid type);
+ char    *mhash_get_hash_name(hashid type);
+ size_t   mhash_get_hash_pblock(hashid type);
+
+B< Initializing Functions >
+
+ MHASH    mhash_init(hashid type);
+ MHASH    hmac_mhash_init(const hashid type, void *key, int keysize, int block);
+
+B< Update Functions >
+
+ int      mhash(MHASH thread, const void *plaintext, size_t size);
+
+B< Finalizing Functions >
+
+ void    *mhash_end(MHASH thread);
+ void    *hmac_mhash_end(MHASH thread);
+
+B< Available Hashes >
+
+ enum hashid {
+	MHASH_CRC32,
+	MHASH_MD5,
+	MHASH_SHA1,
+	MHASH_HAVAL,
+	MHASH_RIPEMD160,
+	MHASH_RIPEMD128,
+	MHASH_SNEFRU,
+	MHASH_TIGER,
+	MHASH_GOST,
+	MHASH_CRC32B
+ };
+
+ typedef enum hashid hashid;
+
+=head1 DESCRIPTION
+
+The B<mhash> library provides an easy to use C interface for several hash
+algorithms (also known as "one-way" algorithm). These can be used to
+create checksums, message digests and more. Currently, MD5, SHA1, GOST, TIGER,
+RIPE-MD160, HAVAL and several other algorithms are supported.
+
+=head1 API FUNCTIONS
+
+We will describe the API of B<mhash> in detail now. The order follows
+the one in the SYNOPSIS directly.
+
+=over 4
+
+=item size_t B<mhash_count>(void);
+
+This returns the C<hashid> of the last available hash. Hashes are numbered from
+0 to C<mhash_count()>.
+
+=item size_t B<mhash_get_block_size>(hashid I<type>);
+
+If I<type> exists, this returns the used blocksize of the hash I<type>
+in bytes. Otherwise, it returns 0.
+
+=item char *B<mhash_get_hash_name>(hashid I<type>);
+
+If I<type> exists, this returns the name of the hash I<type>. Otherwise, a
+C<NULL> pointer is returned. The string is allocated with malloc(3) seperately,
+so do not forget to free(3) it.
+
+=item size_t B<mhash_get_hash_pblock>(hashid I<type>);
+
+It returns the block size that the algorithm operates. This is used
+in hmac_mhash_init. If the return value is 0 you shouldn't use that
+algorithm in HMAC.
+
+=item MHASH B<mhash_init>(hashid I<type>);
+
+This setups a context to begin hashing using the algorithm I<type>. It returns
+a descriptor to that context which will result in leaking memory, if you do not
+call mhash_end(3) later. Returns C<MHASH_FAILED> on failure.
+
+=item MHASH B<hmac_mhash_init>(const hashid I<type>, void *I<key>, int I<keysize>, int I<block>);
+
+This setups a context to begin hashing using the algorithm type in HMAC mode.
+HMAC is a mechanism for message authentication using cryptographic hash
+functions, and is described in rfc2104. I<key> should be a pointer to the
+key and I<keysize> its len. The I<block> is the block size (in bytes) that hmac o
+It should be obtained by mhash_get_hash_pblock(). If its 0 it defaults to 64.
+After calling it you should use mhash() to update the context.
+It returns a descriptor to that context which will result in leaking memory,
+if you do not call hmac_mhash_end(3) later.
+Returns C<MHASH_FAILED> on failure.
+ 
+=item int B<mhash>(MHASH I<thread>, const void *I<plaintext>, size_t I<size>);
+
+This updates the context described by I<thread> with I<plaintext>. I<size> is
+the length of I<plaintext> which may be binary data.
+
+=item void *B<mhash_end>(MHASH I<thread>);
+
+This frees all resources associated with I<thread> and returns the result of
+the whole hashing operation (the ``I<digest>'').
+
+=item void *B<hmac_mhash_end>(MHASH I<thread>);
+
+This frees all resources associated with thread and returns the result of the
+whole hashing operation (the ``I<mac>'').
+ 
+
+=back
+
+=head1 EXAMPLE
+
+Hashing STDIN until EOF.
+
+ #include <mhash.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+
+ int main(void) 
+ {
+ 	int i;
+	MHASH td;
+	unsigned char buffer;
+	unsigned char *hash;
+
+	td = mhash_init(MHASH_MD5);
+
+	if (td == MHASH_FAILED) exit(1);
+
+	while (fread(&buffer, 1, 1, stdin) == 1) {
+		mhash(td, &buffer, 1);
+	}
+
+	hash = mhash_end(td);
+
+	printf("Hash:");
+	for (i = 0; i < mhash_get_block_size(MHASH_MD5); i++) {
+		printf("%.2x", hash[i]);
+	}
+	printf("\n");
+
+	exit(0);
+ }
+
+=head1 EXAMPLE
+
+An example program using HMAC:
+
+ #include <mhash.h>
+ #include <stdio.h>
+
+ int main()
+ {
+
+        char password[] = "Jefe";
+        int keylen = 4;
+        char data[] = "what do ya want for nothing?";
+        int datalen = 28;
+        MHASH td;
+        unsigned char *mac;
+        int j;
+ 
+        td = hmac_mhash_init(MHASH_MD5, password, keylen,
+                            mhash_get_hash_pblock(MHASH_MD5));
+
+        mhash(td, data, datalen);
+        mac = hmac_mhash_end(td);
+
+ /* 
+  * The output should be 0x750c783e6ab0b503eaa86e310a5db738
+  * according to RFC 2104.
+  */
+
+        printf("0x");
+        for (j = 0; j < mhash_get_block_size(MHASH_MD5); j++) {
+                printf("%.2x", mac[j]);
+        }
+        printf("\n");
+        
+        exit(0);
+ }
+ 
+
+=head1 HISTORY
+
+This library was originally written by I<Nikos Mavroyanopoulos>
+<nmav@hellug.gr> who passed the project over to I<Sascha Schumann>
+<sascha@schumann.cx> in May 1999.
+
+=head1 BUGS
+
+If you find any, please send a bug report (preferrably together with a patch)
+to the maintainer I<Sascha Schumann> <sascha@schumann.cx> with a detailed
+description on how to reproduce the bug.  
+
+=head1 AUTHOR
+
+Sascha Schumann <sascha@schumann.cx>
+
+=cut
+

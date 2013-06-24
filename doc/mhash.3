@@ -1,0 +1,426 @@
+.rn '' }`
+''' $RCSfile$$Revision$$Date$
+'''
+''' $Log$
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+'''   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+'''   \*(L" and \*(R", except that they are used on ".xx" lines,
+'''   such as .IP and .SH, which do another additional levels of
+'''   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH mhash 3 "mhash 0.6.1" "1999/05/21" "mhash library"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAME"
+\fBmhash \- Hash Library\fR
+.SH "VERSION"
+mhash 0.6.1
+.SH "SYNOPSIS"
+.PP
+.Vb 1
+\& #include "mhash.h"
+.Ve
+\fB Informative Functions \fR
+.PP
+.Vb 4
+\& size_t   mhash_count(void);
+\& size_t   mhash_get_block_size(hashid type);
+\& char    *mhash_get_hash_name(hashid type);
+\& size_t   mhash_get_hash_pblock(hashid type);
+.Ve
+\fB Initializing Functions \fR
+.PP
+.Vb 2
+\& MHASH    mhash_init(hashid type);
+\& MHASH    hmac_mhash_init(const hashid type, void *key, int keysize, int block);
+.Ve
+\fB Update Functions \fR
+.PP
+.Vb 1
+\& int      mhash(MHASH thread, const void *plaintext, size_t size);
+.Ve
+\fB Finalizing Functions \fR
+.PP
+.Vb 2
+\& void    *mhash_end(MHASH thread);
+\& void    *hmac_mhash_end(MHASH thread);
+.Ve
+\fB Available Hashes \fR
+.PP
+.Vb 12
+\& enum hashid {
+\&        MHASH_CRC32,
+\&        MHASH_MD5,
+\&        MHASH_SHA1,
+\&        MHASH_HAVAL,
+\&        MHASH_RIPEMD160,
+\&        MHASH_RIPEMD128,
+\&        MHASH_SNEFRU,
+\&        MHASH_TIGER,
+\&        MHASH_GOST,
+\&        MHASH_CRC32B
+\& };
+.Ve
+.Vb 1
+\& typedef enum hashid hashid;
+.Ve
+.SH "DESCRIPTION"
+The \fBmhash\fR library provides an easy to use C interface for several hash
+algorithms (also known as \*(L"one-way\*(R" algorithm). These can be used to
+create checksums, message digests and more. Currently, MD5, SHA1, GOST, TIGER,
+RIPE\-MD160, HAVAL and several other algorithms are supported.
+.SH "API FUNCTIONS"
+We will describe the API of \fBmhash\fR in detail now. The order follows
+the one in the SYNOPSIS directly.
+.Ip "size_t \fBmhash_count\fR(void);" 4
+This returns the \f(CWhashid\fR of the last available hash. Hashes are numbered from
+0 to \f(CWmhash_count()\fR.
+.Ip "size_t \fBmhash_get_block_size\fR(hashid \fItype\fR);" 4
+If \fItype\fR exists, this returns the used blocksize of the hash \fItype\fR
+in bytes. Otherwise, it returns 0.
+.Ip "char *\fBmhash_get_hash_name\fR(hashid \fItype\fR);" 4
+If \fItype\fR exists, this returns the name of the hash \fItype\fR. Otherwise, a
+\f(CWNULL\fR pointer is returned. The string is allocated with \fImalloc\fR\|(3) seperately,
+so do not forget to \fIfree\fR\|(3) it.
+.Ip "size_t \fBmhash_get_hash_pblock\fR(hashid \fItype\fR);" 4
+It returns the block size that the algorithm operates. This is used
+in hmac_mhash_init. If the return value is 0 you shouldn't use that
+algorithm in \s-1HMAC\s0.
+.Ip "\s-1MHASH\s0 \fBmhash_init\fR(hashid \fItype\fR);" 4
+This setups a context to begin hashing using the algorithm \fItype\fR. It returns
+a descriptor to that context which will result in leaking memory, if you do not
+call \fImhash_end\fR\|(3) later. Returns \f(CWMHASH_FAILED\fR on failure.
+.Ip "\s-1MHASH\s0 \fBhmac_mhash_init\fR(const hashid \fItype\fR, void *\fIkey\fR, int \fIkeysize\fR, int \fIblock\fR);" 4
+This setups a context to begin hashing using the algorithm type in \s-1HMAC\s0 mode.
+\s-1HMAC\s0 is a mechanism for message authentication using cryptographic hash
+functions, and is described in rfc2104. \fIkey\fR should be a pointer to the
+key and \fIkeysize\fR its len. The \fIblock\fR is the block size (in bytes) that hmac o
+It should be obtained by \fImhash_get_hash_pblock()\fR. If its 0 it defaults to 64.
+After calling it you should use \fImhash()\fR to update the context.
+It returns a descriptor to that context which will result in leaking memory,
+if you do not call \fIhmac_mhash_end\fR\|(3) later.
+Returns \f(CWMHASH_FAILED\fR on failure.
+ 
+=item int \fBmhash\fR(\s-1MHASH\s0 \fIthread\fR, const void *\fIplaintext\fR, size_t \fIsize\fR);
+.Sp
+This updates the context described by \fIthread\fR with \fIplaintext\fR. \fIsize\fR is
+the length of \fIplaintext\fR which may be binary data.
+.Ip "void *\fBmhash_end\fR(\s-1MHASH\s0 \fIthread\fR);" 4
+This frees all resources associated with \fIthread\fR and returns the result of
+the whole hashing operation (the ``\fIdigest\fR'').
+.Ip "void *\fBhmac_mhash_end\fR(\s-1MHASH\s0 \fIthread\fR);" 4
+This frees all resources associated with thread and returns the result of the
+whole hashing operation (the ``\fImac\fR'').
+ 
+.SH "EXAMPLE"
+Hashing STDIN until EOF.
+.PP
+.Vb 3
+\& #include <mhash.h>
+\& #include <stdio.h>
+\& #include <stdlib.h>
+.Ve
+.Vb 6
+\& int main(void) 
+\& {
+\&        int i;
+\&        MHASH td;
+\&        unsigned char buffer;
+\&        unsigned char *hash;
+.Ve
+.Vb 1
+\&        td = mhash_init(MHASH_MD5);
+.Ve
+.Vb 1
+\&        if (td == MHASH_FAILED) exit(1);
+.Ve
+.Vb 3
+\&        while (fread(&buffer, 1, 1, stdin) == 1) {
+\&                mhash(td, &buffer, 1);
+\&        }
+.Ve
+.Vb 1
+\&        hash = mhash_end(td);
+.Ve
+.Vb 5
+\&        printf("Hash:");
+\&        for (i = 0; i < mhash_get_block_size(MHASH_MD5); i++) {
+\&                printf("%.2x", hash[i]);
+\&        }
+\&        printf("\en");
+.Ve
+.Vb 2
+\&        exit(0);
+\& }
+.Ve
+.SH "EXAMPLE"
+An example program using HMAC:
+.PP
+.Vb 2
+\& #include <mhash.h>
+\& #include <stdio.h>
+.Ve
+.Vb 2
+\& int main()
+\& {
+.Ve
+.Vb 10
+\&        char password[] = "Jefe";
+\&        int keylen = 4;
+\&        char data[] = "what do ya want for nothing?";
+\&        int datalen = 28;
+\&        MHASH td;
+\&        unsigned char *mac;
+\&        int j;
+\& 
+\&        td = hmac_mhash_init(MHASH_MD5, password, keylen,
+\&                            mhash_get_hash_pblock(MHASH_MD5));
+.Ve
+.Vb 2
+\&        mhash(td, data, datalen);
+\&        mac = hmac_mhash_end(td);
+.Ve
+.Vb 4
+\& /* 
+\&  * The output should be 0x750c783e6ab0b503eaa86e310a5db738
+\&  * according to RFC 2104.
+\&  */
+.Ve
+.Vb 9
+\&        printf("0x");
+\&        for (j = 0; j < mhash_get_block_size(MHASH_MD5); j++) {
+\&                printf("%.2x", mac[j]);
+\&        }
+\&        printf("\en");
+\&        
+\&        exit(0);
+\& }
+\& 
+.Ve
+.SH "HISTORY"
+This library was originally written by \fINikos Mavroyanopoulos\fR
+<nmav@hellug.gr> who passed the project over to \fISascha Schumann\fR
+<sascha@schumann.cx> in May 1999.
+.SH "BUGS"
+If you find any, please send a bug report (preferrably together with a patch)
+to the maintainer \fISascha Schumann\fR <sascha@schumann.cx> with a detailed
+description on how to reproduce the bug.  
+.SH "AUTHOR"
+Sascha Schumann <sascha@schumann.cx>
+
+.rn }` ''
+.IX Title "mhash 3"
+.IX Name "B<mhash - Hash Library>"
+
+.IX Header "NAME"
+
+.IX Header "VERSION"
+
+.IX Header "SYNOPSIS"
+
+.IX Header "DESCRIPTION"
+
+.IX Header "API FUNCTIONS"
+
+.IX Item "size_t \fBmhash_count\fR(void);"
+
+.IX Item "size_t \fBmhash_get_block_size\fR(hashid \fItype\fR);"
+
+.IX Item "char *\fBmhash_get_hash_name\fR(hashid \fItype\fR);"
+
+.IX Item "size_t \fBmhash_get_hash_pblock\fR(hashid \fItype\fR);"
+
+.IX Item "\s-1MHASH\s0 \fBmhash_init\fR(hashid \fItype\fR);"
+
+.IX Item "\s-1MHASH\s0 \fBhmac_mhash_init\fR(const hashid \fItype\fR, void *\fIkey\fR, int \fIkeysize\fR, int \fIblock\fR);"
+
+.IX Item "void *\fBmhash_end\fR(\s-1MHASH\s0 \fIthread\fR);"
+
+.IX Item "void *\fBhmac_mhash_end\fR(\s-1MHASH\s0 \fIthread\fR);"
+
+.IX Header "EXAMPLE"
+
+.IX Header "EXAMPLE"
+
+.IX Header "HISTORY"
+
+.IX Header "BUGS"
+
+.IX Header "AUTHOR"
+
