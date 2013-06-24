@@ -1,0 +1,2 @@
+0001-char-mhash_get_hash_name.patch
+0002-Fix-mhash_deinit-segfaults-with-snefru-and-whirlpool.patch
