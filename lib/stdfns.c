@@ -85,18 +85,33 @@ mutils_bzero(void *s, __const mutils_word32 n)
 
 WIN32DLL_DEFINE
 void
-mutils_memset(void *s, __const mutils_word8 c, const mutils_word32 n)
+mutils_memset(void *s, __const mutils_word8 c, __const mutils_word32 n)
 {
-	mutils_word8 *stmp = (mutils_word8 *) s;
+	mutils_word8 *stmp;
+	mutils_word32 *ltmp = (mutils_word32 *) s;
+	mutils_word32 lump;
 	mutils_word32 i;
+	mutils_word32 words;
+	mutils_word32 remainder;
 
 	if ((s == NULL) || (n == 0))
 	{
 		return;
 	}
 
+	lump = (c << 24) + (c << 16) + (c << 8) + c;
 
-	for (i = 0; i < n; i++, stmp++)
+	words = n >> 2;
+	remainder = n - (words << 2);
+
+	for (i = 0; i < words; i++, ltmp++)
+	{
+		*ltmp = lump;
+	}
+
+	stmp = (mutils_word8 *) ltmp;
+
+	for (i = 0; i < remainder; i++, stmp++)
 	{
 		*stmp = c;
 	}
@@ -104,31 +119,48 @@ mutils_memset(void *s, __const mutils_word8 c, const mutils_word32 n)
 
 WIN32DLL_DEFINE
 void
-mutils_memcpy(void *dest, __const void *src, const mutils_word32 n)
+mutils_memcpy(void *dest, __const void *src, __const mutils_word32 n)
 {
 	mutils_word8 *ptr1;
 	mutils_word8 *ptr2;
+	mutils_word32 *bigptr1;
+	mutils_word32 *bigptr2;
 	mutils_word32 i;
+	mutils_word32 words;
+	mutils_word32 remainder;
 
 	if ((dest == NULL) || (src == NULL) || (n == 0))
 	{
 		return;
 	}
 
-	ptr1 = (mutils_word8 *) dest;
-	ptr2 = (mutils_word8 *) src;
+	words = n >> 2;
+	remainder = n - (words << 2);
 
-	for (i = 0; i < n; i++, ptr1++, ptr2++)
+	bigptr1 = (mutils_word32 *) dest;
+	bigptr2 = (mutils_word32 *) src;
+
+	for (i = 0; i < words; i ++, bigptr1++, bigptr2++)
+	{
+		*bigptr1 = *bigptr2;
+	}
+
+	ptr1 = (mutils_word8 *) bigptr1;
+	ptr2 = (mutils_word8 *) bigptr2;
+
+	for (i = 0; i < remainder; i++, ptr1++, ptr2++)
 	{
 		*ptr1 = *ptr2;
 	}
 }
 
 #define MIX32(a) \
-        (((mutils_word32)((mutils_word8 *)(a))[0]) | \
-        (((mutils_word32)((mutils_word8 *)(a))[1]) << 8)| \
-        (((mutils_word32)((mutils_word8 *)(a))[2]) << 16)| \
-        (((mutils_word32)((mutils_word8 *)(a))[3]) << 24))
+	((mutils_word32) \
+		(((a & (mutils_word32) 0x000000ffU) << 24) | \
+		 ((a & (mutils_word32) 0x0000ff00U) << 8) | \
+		 ((a & (mutils_word32) 0x00ff0000U) >> 8) | \
+		 ((a & (mutils_word32) 0xff000000U) >> 24)) \
+	)
 
 /*
    Byte swap a 32bit integer 
@@ -193,16 +225,31 @@ mutils_memmove(void *dest, __const void *src, const mutils_word32 n)
 	mutils_word8 *ptr1;
 	mutils_word8 *ptr2;
 	mutils_word32 i;
+	mutils_word32 *bigptr1;
+	mutils_word32 *bigptr2;
+	mutils_word32 words;
+	mutils_word32 remainder;
 
 	if ((dest == NULL) || (src == NULL) || (n == 0))
 	{
 		return;
 	}
 
-	ptr1 = (mutils_word8 *) dest;
-	ptr2 = (mutils_word8 *) src;
+	bigptr1 = (mutils_word32 *) dest;
+	bigptr2 = (mutils_word32 *) src;
 
-	for (i = 0; i < n; i++, ptr1++, ptr2++)
+	words = n >> 2;
+	remainder = n - (words << 2);
+
+	for (i = 0; i < words; i++, bigptr1++, bigptr2++)
+	{
+		*bigptr1 = *bigptr2;
+	}
+
+	ptr1 = (mutils_word8 *) bigptr1;
+	ptr2 = (mutils_word8 *) bigptr2;
+
+	for (i = 0; i < remainder; i++, ptr1++, ptr2++)
 	{
 		*ptr1 = *ptr2;
 	}
@@ -362,7 +409,7 @@ mutils_strncmp(__const mutils_word8 *src1, const mutils_word8 *src2, const mutil
 	}
 	if (src1 == NULL)
 	{
-		if (src2 = NULL)
+		if (src2 == NULL)
 		{
 			return(0);
 		}
@@ -387,6 +434,11 @@ mutils_word8
 mutils_val2char(mutils_word8 x)
 {
 	mutils_word8 out;
+	mutils_word8 out2;
+
+	static mutils_word8 *table = "0123456789abcdef";
+
+	out2 = *(table + x);
 
 	switch(x)
 	{
@@ -407,6 +459,12 @@ mutils_val2char(mutils_word8 x)
 		case 0xe : { out = 'e'; break; }
 		case 0xf : { out = 'f'; break; }
 	}
+
+	if (out2 != out)
+	  {
+	    printf("ERROR!\n");
+	    exit(1);
+	  }
 	return(out);
 }
 

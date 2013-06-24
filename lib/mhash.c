@@ -248,7 +248,10 @@ WIN32DLL_DEFINE mutils_word8 *mhash_get_hash_name(hashid type)
 	/* avoid prefix */
 	MHASH_ALG_LOOP(ret = p->name);
 
-	if (ret!=NULL) ret += sizeof("MHASH_") - 1;
+	if (ret != NULL)
+	{
+		ret += sizeof("MHASH_") - 1;
+	}
 
 	return mutils_strdup(ret);
 }
@@ -260,7 +263,10 @@ WIN32DLL_DEFINE __const mutils_word8 *mhash_get_hash_name_static(hashid type)
 	/* avoid prefix */
 	MHASH_ALG_LOOP( ret = p->name);
 	
-	if ( ret !=NULL) ret+= sizeof("MHASH_") - 1;
+	if ( ret != NULL)
+	{
+		ret += sizeof("MHASH_") - 1;
+	}
 
 	return ret;
 }
@@ -278,7 +284,8 @@ MHASH ret;
 	/* copy the internal state also */
 	ret->state = (mutils_word8 *) mutils_malloc(ret->state_size);
 
-	if (ret->state == NULL) {
+	if (ret->state == NULL)
+	{
 		mutils_free(ret);
 		return MHASH_FAILED;
 	}
@@ -286,10 +293,12 @@ MHASH ret;
 	mutils_memcpy(ret->state, from->state, ret->state_size);
 	
 	/* copy the key in case of hmac*/
-	if (ret->hmac_key_size != 0) {
+	if (ret->hmac_key_size != 0)
+	{
 		ret->hmac_key = (mutils_word8 *) mutils_malloc(ret->hmac_key_size);
 
-		if (ret == NULL) {
+		if (ret == NULL)
+		{
 			mutils_free(ret->state);
 			mutils_free(ret);
 			return MHASH_FAILED;
@@ -307,7 +316,9 @@ MHASH mhash_init_int(__const hashid type)
 
 	ret = (MHASH) mutils_malloc(sizeof(MHASH_INSTANCE));
 	if (ret == NULL)
+	{
 		return MHASH_FAILED;
+	}
 
 	mutils_memset(ret, 0, sizeof(MHASH_INSTANCE));
 
@@ -325,10 +336,15 @@ MHASH mhash_init_int(__const hashid type)
 		mutils_free(ret);
 		return(MHASH_FAILED);
 	}
+
 	func = _mhash_get_init_func( type);
-	if (func!=NULL)
+
+	if (func != NULL)
+	{
 		func(ret->state);
-	else {
+	}
+	else
+	{
 		mutils_free(ret->state);
 		mutils_free(ret);
 		return(MHASH_FAILED);
@@ -348,7 +364,9 @@ mutils_boolean mhash(MHASH td, __const void *plaintext, mutils_word32 size)
 {
 	
 	if (td->hash_func!=NULL)
+	{
 		td->hash_func( td->state, plaintext, size);
+	}
 
 	return(MUTILS_OK);
 }
@@ -358,15 +376,21 @@ WIN32DLL_DEFINE
     void mhash_deinit(MHASH td, void *result)
 {
 	
-	if (td->final_func!=NULL)
+	if (td->final_func != NULL)
+	{
 		td->final_func( td->state);
+	}
 
-	if (td->deinit_func!=NULL)
+	if (td->deinit_func != NULL)
+	{
 		td->deinit_func( td->state, result);
+	}
 
-	if (NULL != td->state) {
+	if (NULL != td->state)
+	{
 		mutils_free(td->state);
 	}
+
 	mutils_free(td);
 
 	return;
@@ -381,8 +405,12 @@ WIN32DLL_DEFINE
 	size = mhash_get_block_size( td->algorithm_given);
 	
 	digest = mutils_malloc(size);
-	if (digest==NULL) return NULL;
-	
+
+	if (digest==NULL)
+	{
+		return NULL;
+	}
+
 	mhash_deinit( td, digest);
 	
 	return(digest);
@@ -426,18 +454,24 @@ WIN32DLL_DEFINE
 	{
 		opad = mutils_malloc(td->hmac_block);
 		if (opad == NULL)
+		{
 			return(-MUTILS_SYSTEM_RESOURCE_ERROR);
+		}
 		opad_alloc = 1;
-	} else {
+	}
+	else
+	{
 		opad = _opad;
 	}
 
 
-	for (i = 0; i < td->hmac_key_size; i++) {
+	for (i = 0; i < td->hmac_key_size; i++)
+	{
 		opad[i] = (0x5C) ^ td->hmac_key[i];
 	}
 
-	for (; i < td->hmac_block; i++) {
+	for (; i < td->hmac_block; i++)
+	{
 		opad[i] = (0x5C);
 	}
 
@@ -487,7 +521,9 @@ WIN32DLL_DEFINE
 			(td->algorithm_given));
 
 	if (digest == NULL)
+	{
 		return(NULL);
+	}
 
 	mhash_hmac_deinit(td, digest);
 	
@@ -525,18 +561,25 @@ WIN32DLL_DEFINE
 		{
 			ipad = mutils_malloc(ret->hmac_block);
 			if (ipad == NULL)
+			{
 				return MHASH_FAILED;
+			}
 			ipad_alloc = MUTILS_TRUE;
-		} else {
+		}
+		else
+		{
 			ipad = _ipad;
 		}
 		
-		if (keysize > ret->hmac_block) {
+		if (keysize > ret->hmac_block)
+		{
 			tmptd = mhash_init(type);
 			mhash(tmptd, key, keysize);
 			ret->hmac_key_size = mhash_get_block_size(type);
 			ret->hmac_key = mhash_end(tmptd);
-		} else {
+		}
+		else
+		{
 			ret->hmac_key = mutils_malloc(ret->hmac_block);
 			mutils_bzero(ret->hmac_key, ret->hmac_block);
 			mutils_memcpy(ret->hmac_key, key, keysize);
@@ -545,17 +588,21 @@ WIN32DLL_DEFINE
 
 		/* IPAD */
 
-		for (i = 0; i < ret->hmac_key_size; i++) {
+		for (i = 0; i < ret->hmac_key_size; i++)
+		{
 			ipad[i] = (0x36) ^ ret->hmac_key[i];
 		}
-		for (; i < ret->hmac_block; i++) {
+		for (; i < ret->hmac_block; i++)
+		{
 			ipad[i] = (0x36);
 		}
 
 		mhash(ret, ipad, ret->hmac_block);
 
 		if (ipad_alloc == MUTILS_TRUE)
+		{
 			mutils_free(ipad);
+		}
 	}
 
 	return(ret);
@@ -593,7 +640,8 @@ WIN32DLL_DEFINE mutils_error mhash_save_state_mem(MHASH td, void *_mem, mutils_w
 		return(MUTILS_INVALID_INPUT_BUFFER);
 	}
 	
-	if ( mem != NULL) {
+	if ( mem != NULL)
+	{
 		pos = 0;
 		mutils_memcpy( mem, &td->algorithm_given, sizeof(td->algorithm_given));
 		pos = sizeof( td->algorithm_given);
@@ -630,7 +678,9 @@ WIN32DLL_DEFINE MHASH mhash_restore_state_mem(void* _mem)
 	mutils_word32 pos;
 
 	if (mem==NULL)
+	{
 		return(ret);
+	}
 
 	mutils_memcpy( &algorithm_given, mem, sizeof(algorithm_given));
 	
@@ -652,8 +702,10 @@ WIN32DLL_DEFINE MHASH mhash_restore_state_mem(void* _mem)
 	if (ret->hmac_key_size != 0)
 	{
 		ret->hmac_key = mutils_malloc(ret->hmac_key_size);
-		if (ret->hmac_key==NULL)
+		if (ret->hmac_key == NULL)
+		{
 			goto freeall;
+		}
 	
 		mutils_memcpy( ret->hmac_key, &mem[pos], ret->hmac_key_size);
 		pos += sizeof(ret->hmac_key_size);
