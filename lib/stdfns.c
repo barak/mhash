@@ -156,6 +156,10 @@ WIN32DLL_DEFINE
 void
 mutils_memset(void *s, __const mutils_word8 c, __const mutils_word32 n)
 {
+#if defined(sparc)
+	/* Sparc needs 8-bit alignment - just use standard memset */
+	memset(s, (int) c, (size_t) n);
+#else
 	mutils_word8 *stmp;
 	mutils_word32 *ltmp = (mutils_word32 *) s;
 	mutils_word32 lump;
@@ -184,6 +188,7 @@ mutils_memset(void *s, __const mutils_word8 c, __const mutils_word32 n)
 	{
 		*stmp = c;
 	}
+#endif
 }
 
 static void
@@ -222,7 +227,8 @@ mutils_memcpy(void *dest, __const void *src, __const mutils_word32 n)
 	if ((n < 16) || ((mutils_word32)ptr1 & 0x3) || ((mutils_word32)ptr2 
 & 0x3))
 	{
-		return mutils_memcpy8(ptr2, ptr1, n);
+		mutils_memcpy8(ptr2, ptr1, n);
+		return;
 	}
 
 	words = n >> 2;
