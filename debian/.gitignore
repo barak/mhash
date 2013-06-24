@@ -1,0 +1,9 @@
+/*.debhelper
+/*.log
+/*.substvars
+/autoreconf.after
+/autoreconf.before
+/files
+/libmhash-dev/
+/libmhash2/
+/tmp/
