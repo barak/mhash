@@ -80,6 +80,18 @@
 #include <values.h>
 #endif
 
+#if defined(HAVE_SYS_MMAN_H)
+#include <sys/mman.h>
+#endif
+
+#if defined(HAVE_ERRNO_H)
+#include <errno.h>
+#endif
+
+#if defined(HAVE_ERROR_H)
+#include <error.h>
+#endif
+
 #if defined(HAVE_INTTYPES_H)
 #include <inttypes.h>
 #endif
@@ -96,11 +108,11 @@
 #define MAXINT INT_MAX
 #endif
 
-#if defined(INT_MIN)
+#if !defined(INT_MIN)
 #define INT_MIN (-INT_MAX - 1)
 #endif
 
-#if defined(MININT)
+#if !defined(MININT)
 #define MININT INT_MIN
 #endif
 

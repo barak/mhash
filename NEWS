@@ -1,10 +1,19 @@
-mhash ChangeLog ($Date: 2005/01/12 21:05:05 $)
+mhash ChangeLog ($Date: 2006/06/24 21:46:11 $)
 ===============================================================================
 
 People
 
    NM - Nikos Mavroyanopoulos <nmav@hellug.gr>
    SS - Sascha Schumann <sascha@schumann.cx>
+
+Version 0.9.7
+- More patches, more cleanups. Better handling of endian issues. Should
+  handle platforms that do weird things with booleans better. Eliminated
+  more redundant code. Snefru is now endian-aware. Maybe.
+
+Known Issues:
+- Sub-optimal on 64-bit platforms, as a lot of the code assumes 32-bits.
+- May be some big-endian issues remaining. make check is your friend!
 
 Version 0.9.6
 - Bunch of patches and speedups. Credits to be added.

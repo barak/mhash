@@ -94,6 +94,9 @@
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
 
+/* Define to 1 if you have the `mlock' function. */
+#undef HAVE_MLOCK
+
 /* Define to 1 if you have the `sigaction' function. */
 #undef HAVE_SIGACTION
 
@@ -126,6 +129,12 @@
 
 /* Define to 1 if you have the `strtol' function. */
 #undef HAVE_STRTOL
+
+/* Define to 1 if you have the <sys/endian.h> header file. */
+#undef HAVE_SYS_ENDIAN_H
+
+/* Define to 1 if you have the <sys/mman.h> header file. */
+#undef HAVE_SYS_MMAN_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H
@@ -174,9 +183,6 @@
 
 /* Define to 1 if the C compiler supports function prototypes. */
 #undef PROTOTYPES
-
-/* The size of a `', as computed by sizeof. */
-#undef SIZEOF_
 
 /* The size of a `unsigned char', as computed by sizeof. */
 #undef SIZEOF_UNSIGNED_CHAR

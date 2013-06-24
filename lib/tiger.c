@@ -192,7 +192,7 @@ static void tiger_compress(mutils_word64 *str, mutils_word64 state[3])
 static void tiger_block(struct tiger_ctx *ctx, mutils_word8 * str)
 {
 	mutils_word64 temp[TIGER_DATALEN];
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN)
 	mutils_word32 j;
 	for(j=0; j<TIGER_DATALEN; j++, str+=8)
 		temp[j] = STRING2INT64(str);
@@ -255,7 +255,7 @@ void tiger_final(struct tiger_ctx *ctx)
 	mutils_word8 temp[TIGER_DATASIZE];
 	i = ctx->index;
 	
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN)
 	for(j=0; j<i; j++)
 		temp[j^7] = ctx->block[j];
 

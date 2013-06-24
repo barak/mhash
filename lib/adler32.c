@@ -20,7 +20,7 @@
 
 #include "libdefs.h"
 
-#ifdef ENABLE_ADLER32
+#if defined(ENABLE_ADLER32)
 
 #include "mhash_adler32.h"
 
@@ -36,11 +36,13 @@ void mhash_get_adler32(__const mutils_word32 *adler, void *ret)
 {
 	mutils_word32 tmp = *adler;
 
-#ifdef WORDS_BIGENDIAN
+#if defined(WORDS_BIGENDIAN)
 	tmp = mutils_word32swap(tmp);
 #endif
 	if (ret!=NULL)
+	{
 		mutils_memcpy(ret, &tmp, sizeof(mutils_word32));
+	}
 }
 
 /**
@@ -59,13 +61,18 @@ void mhash_adler32(mutils_word32 * adler, __const void *given_buf, mutils_word32
 	mutils_word32 n;
 	mutils_word8 *p = (mutils_word8 *) given_buf;
 
-	for (n = 0; n < len; n++, p++) {
+	for (n = 0; n < len; n++, p++)
+	{
 		s1 += *p;
 		if (s1 >= 65521)	/* using modulo took about 7 times longer on my CPU! */
+		{
 			s1 -= 65521;	/* WARNING: it's meant to be >= 65521, not just > ! */
+		}
 		s2 += s1;
 		if (s2 >= 65521)	/* same warning applies here, too */
+		{
 			s2 -= 65521;
+		}
 	}
 	*adler = (s2 << 16) + s1;
 }

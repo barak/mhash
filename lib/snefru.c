@@ -15,7 +15,7 @@
 
 #include "libdefs.h"
 
-#ifdef ENABLE_SNEFRU
+#if defined(ENABLE_SNEFRU)
 
 #include "mhash_snefru.h"
 
@@ -728,7 +728,7 @@ static void snefru(mutils_word32 *block, mutils_word32 len)
 	mutils_word32 isave[SNEFRU256_DIGEST_LEN];
 	mutils_word32 *sbox, x;
 	mutils_word32 i, j;
-	mutils_word32 limit;
+	__const mutils_word32 *limit;
 
 	mutils_memcpy(isave, block, SNEFRU256_DIGEST_SIZE);
   
@@ -762,12 +762,9 @@ static void processBuffer(struct snefru_ctx *ctx, int len)
 	mutils_word32 i;
 	mutils_word8 *buf = ctx->buffer;
 
-	for(i = len; i < SNEFRU_BLOCK_LEN; i++)
+	for(i = len; i < SNEFRU_BLOCK_LEN; i++, buf += 4)
 	{
-		ctx->hash[i] = 
-		  (mutils_word32)buf[0] << 24 | (mutils_word32)buf[1] << 16 |
-		  (mutils_word32)buf[2] << 8 | (mutils_word32)buf[3];
-		buf += 4;
+		ctx->hash[i] = mutils_bend32(*(mutils_word32 *)buf);
 	}
 	snefru(ctx->hash, len);
 }
@@ -862,12 +859,9 @@ static void snefru_digest(__const struct snefru_ctx *ctx, mutils_word8 *digest, 
 {
 	mutils_word32 i;
 
-	for (i = 0; i < len; i++)
+	for (i = 0; i < len; i++, digest += 4)
 	{
-		*digest++ = ctx->hash[i] >> 24;
-		*digest++ = (ctx->hash[i] >> 16) & 0xff;
-		*digest++ = (ctx->hash[i] >> 8) & 0xff;
-		*digest++ = ctx->hash[i] & 0xff;
+		*(mutils_word32 *)digest = mutils_bend2sys32(ctx->hash[i]);
 	}
 }
 
