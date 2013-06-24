@@ -1,0 +1,17 @@
+*.la
+*.lo
+*.o
+.libs/
+/autom4te.cache/
+/config.log
+/config.status
+/include/mutils/config.h
+/include/mutils/mhash_config.h
+/include/mutils/stamp-h1
+/include/mutils/stamp-h2
+/src/driver
+/src/frag_test
+/src/hmac_test
+/src/keygen_test
+/src/rest_test
+Makefile
