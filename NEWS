@@ -1,10 +1,18 @@
-mhash ChangeLog ($Date: 2004/04/17 21:36:08 $)
+mhash ChangeLog ($Date: 2005/01/12 21:05:05 $)
 ===============================================================================
 
 People
 
    NM - Nikos Mavroyanopoulos <nmav@hellug.gr>
    SS - Sascha Schumann <sascha@schumann.cx>
+
+Version 0.9.2
+- Added SNEFRU128, SNEFRU256. Reintroduced MD2.
+  (jkmhash@itaparica.org)
+- Fixes to .spec file and clean-ups of documentation
+  (cpedersen[at]c-note.dk)
+- Fixed typecasts, memory leaks and compiler warnings
+  (imipak@yahoo.com)
 
 Version 0.9.1
 - Added RIPEMD128/256/320, SHA224/384/512, Whirlpool

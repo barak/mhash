@@ -9,7 +9,9 @@
  *  All rights reserved.                    
  */
 
-#ifndef GOSTHASH_H
+#if defined(ENABLE_GOST)
+
+#if !defined(GOSTHASH_H)
 #define GOSTHASH_H
 
 /*
@@ -19,11 +21,11 @@
 #include "libdefs.h"
 
 typedef struct {
-	word32 sum[8];
-	word32 hash[8];
-	word32 len[8];
-	byte partial[32];
-	size_t partial_bytes;
+	mutils_word32 sum[8];
+	mutils_word32 hash[8];
+	mutils_word32 len[8];
+	mutils_word8 partial[32];
+	mutils_word32 partial_bytes;
 } GostHashCtx;
 
 /*
@@ -44,14 +46,16 @@ void gosthash_reset(GostHashCtx * ctx);
    Mix in len bytes of data for the given buffer. 
  */
 
-void gosthash_update(GostHashCtx * ctx, const byte * buf, size_t len);
+void gosthash_update(GostHashCtx * ctx, __const mutils_word8 * buf, mutils_word32 len);
 
 /*
    Compute and save the 32-byte digest. 
  */
 
-void gosthash_final(GostHashCtx * ctx, byte * digest);
+void gosthash_final(GostHashCtx * ctx, mutils_word8 * digest);
 
 #endif /*
 	      GOSTHASH_H 
 	    */
+
+#endif
