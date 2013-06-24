@@ -21,9 +21,9 @@
 
 
 
-#include "mhash.h"
 #include "libdefs.h"
 #include "keygen.h"
+#include <mhash.h>
 
 #define MAX_DIGEST_SIZE 40
 

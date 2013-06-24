@@ -20,8 +20,8 @@
 
 /*
  * The function of this header is to make sure that all system-specific headers
- * files that are required are included. In future, this should be done a
- * little bit more intelligently.
+ * files that are required are included. Eventually, system headers will only
+ * be pulled in when local definitions don't exist or are suboptimal.
  *
  * For now, we're also defining MAXINT and MININT in here, as there are
  * reported problems with the way we're trying to find it.
@@ -30,7 +30,9 @@
 #if !defined(__MINCLUDES_H)
 #define __MINCLUDES_H
 
+#if defined(MUTILS_USE_MHASH_CONFIG)
 #include <mutils/mhash_config.h>
+#endif
 
 #if defined(HAVE_LIMITS_H)
 #include <limits.h>

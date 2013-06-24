@@ -235,6 +235,9 @@ static void havalTransform3 (mutils_word32 E[8], __const mutils_word32 D[32], mu
 	E[1] += T[1] = ROTR (F3 (T[0], T[3], T[4], T[5], T[6], T[7], T[2]), 7) + ROTR (T[1], 11) + W[ 5] + 0xAFD6BA33UL;
 	E[0] += T[0] = ROTR (F3 (T[7], T[2], T[3], T[4], T[5], T[6], T[1]), 7) + ROTR (T[0], 11) + W[ 2] + 0x6C24CF5CUL;
 
+#if defined(WORDS_BIGENDIAN)
+	mutils_free(W);
+#endif
 } /* havalTransform3 */
 
 
@@ -400,6 +403,9 @@ static void havalTransform4 (mutils_word32 E[8], __const mutils_word32 D[32], mu
 	E[1] += T[1] = ROTR (F4 (T[0], T[6], T[2], T[7], T[4], T[3], T[5]), 7) + ROTR (T[1], 11) + W[16] + 0x6EEF0B6CUL;
 	E[0] += T[0] = ROTR (F4 (T[7], T[5], T[1], T[6], T[3], T[2], T[4]), 7) + ROTR (T[0], 11) + W[13] + 0x137A3BE4UL;
 
+#if defined(WORDS_BIGENDIAN)
+	mutils_free(W);
+#endif
 } /* havalTransform4 */
 
 
@@ -603,6 +609,9 @@ static void havalTransform5 (mutils_word32 E[8], __const mutils_word32 D[32], mu
 	E[1] += T[1] = ROTR (F5 (T[4], T[7], T[2], T[0], T[6], T[5], T[3]), 7) + ROTR (T[1], 11) + W[25] + 0xC1A94FB6UL;
 	E[0] += T[0] = ROTR (F5 (T[3], T[6], T[1], T[7], T[5], T[4], T[2]), 7) + ROTR (T[0], 11) + W[15] + 0x409F60C4UL;
 
+#if defined(WORDS_BIGENDIAN)
+	mutils_free(W);
+#endif
 } /* havalTransform5 */
 
 mutils_error havalInit256( havalContext *hcp) {
@@ -831,10 +840,9 @@ mutils_error havalFinal (havalContext *hcp, mutils_word8 *digest)
 			) >> 8) |
 			( (hcp->digest[7] & 0x000000FFUL) << 24);
 #if defined(WORDS_BIGENDIAN)
-		digest = mutils_word32nswap((mutils_word32 *) (hcp->digest), 128/32, MUTILS_FALSE);
-#else
-		mutils_memcpy(digest, hcp->digest, 128/8);
+		mutils_word32nswap((mutils_word32 *) (hcp->digest), 128/32, MUTILS_TRUE);
 #endif
+		mutils_memcpy(digest, hcp->digest, 128/8);
 		break;
 	case 160:
 		hcp->digest[4] +=
@@ -851,10 +859,9 @@ mutils_error havalFinal (havalContext *hcp, mutils_word8 *digest)
 			((hcp->digest[7] & 0x0000003FUL) | (hcp->digest[6] & 0xFE000000UL) | (hcp->digest[5] & 0x01F80000UL), 19);
 
 #if defined(WORDS_BIGENDIAN)
-		digest = mutils_word32nswap((mutils_word32 *) (hcp->digest), 160/32, MUTILS_FALSE);
-#else
-		mutils_memcpy (digest, hcp->digest, 160/8);
+		mutils_word32nswap((mutils_word32 *) (hcp->digest), 160/32, MUTILS_TRUE);
 #endif
+		mutils_memcpy (digest, hcp->digest, 160/8);
 
 		break;
 	case 192:
@@ -873,10 +880,9 @@ mutils_error havalFinal (havalContext *hcp, mutils_word8 *digest)
 			((hcp->digest[7] & 0x0000001FUL) | (hcp->digest[6] & 0xFC000000UL), 26);
 
 #if defined(WORDS_BIGENDIAN)
-		digest = mutils_word32nswap((mutils_word32 *) (hcp->digest), 192/32, MUTILS_FALSE);
-#else
-		mutils_memcpy (digest, hcp->digest, 192/8);
+		mutils_word32nswap((mutils_word32 *) (hcp->digest), 192/32, MUTILS_TRUE);
 #endif
+		mutils_memcpy (digest, hcp->digest, 192/8);
 
 		break;
 	case 224:
@@ -889,19 +895,17 @@ mutils_error havalFinal (havalContext *hcp, mutils_word8 *digest)
 		hcp->digest[0] += (hcp->digest[7] >> 27) & 0x0000001FUL;
 
 #if defined(WORDS_BIGENDIAN)
-		digest = mutils_word32nswap((mutils_word32 *) (hcp->digest), 224/32, MUTILS_FALSE);
-#else
-		mutils_memcpy (digest, hcp->digest, 224/8);
+		mutils_word32nswap((mutils_word32 *) (hcp->digest), 224/32, MUTILS_TRUE);
 #endif
+		mutils_memcpy (digest, hcp->digest, 224/8);
 
 		break;
 	case 256:
 
 #if defined(WORDS_BIGENDIAN)
-		digest = mutils_word32nswap((mutils_word32 *) (hcp->digest), 256/32, MUTILS_FALSE);
-#else
-		mutils_memcpy (digest, hcp->digest, 256/8);
+		mutils_word32nswap((mutils_word32 *) (hcp->digest), 256/32, MUTILS_TRUE);
 #endif
+		mutils_memcpy (digest, hcp->digest, 256/8);
 
 		break;
 	}

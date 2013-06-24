@@ -1,3 +1,20 @@
+2007-04-02 12:00  imipak
+	Since the symbol clashes, it has mostly been endian and alignment
+	problems, although some compiler warnings have been squished as well.
+
+2007-02-20 12:00  imipak
+	Fixed symbol clashes. This will probably be revisited, but any future
+	scheme will transparently use the masking scheme present in this
+	edition.
+
+2007-02-10 12:00  imipak
+
+	Well, Michael Schwendt did it again. He's provided a set of patches
+	to solve the Haval endian problem, which are included. He also polished
+	off some memory leaks that had been hitherto undetected. All kudos and
+	Slashdot mod points to him for his excellent work. (Now all I have to
+	figure out is how to port this code to the Amiga...)
+
 2006-01-01 12:00  imipak
 
 	Virtually all files impacted by forcing unsigned types for unsigned

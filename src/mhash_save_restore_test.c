@@ -1,3 +1,4 @@
+#define MUTILS_USE_MHASH_CONFIG
 #include <mhash.h>
 
 int main(void)

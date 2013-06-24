@@ -68,6 +68,14 @@ int mutils_munlock(__const void *addr, __const mutils_word32 len)
 	return(ret);
 }
 
+/*
+ * NOTE: In order for memory locking to be useful, we need our own malloc
+ * implementation, as we cannot guarantee that the system-supplied one will
+ * let us know how much memory has been malloc()'ed. For much the same reason,
+ * neither free() nor realloc() can zero safely. This allows the potential
+ * leakage of information.
+ */
+
 WIN32DLL_DEFINE
 void *
 mutils_malloc(__const mutils_word32 n)
@@ -87,6 +95,31 @@ mutils_malloc(__const mutils_word32 n)
 	}
 
 	return(ptr);
+}
+
+WIN32DLL_DEFINE
+void *
+mutils_realloc(__const void *ptr, __const mutils_word32 n)
+{
+	void *ptrOut;
+
+	if ((ptr == NULL) && (n > 0))
+	{
+		ptrOut = mutils_malloc(n);
+	}
+	else
+	{
+		if ((ptr != NULL) && (n == 0))
+		{
+			mutils_free(ptr);
+			ptrOut = NULL;
+		}
+		else
+		{
+		  ptrOut = realloc((void *) ptr, n);
+		}
+	}
+	return(ptrOut);
 }
 
 WIN32DLL_DEFINE
@@ -153,6 +186,18 @@ mutils_memset(void *s, __const mutils_word8 c, __const mutils_word32 n)
 	}
 }
 
+static void
+mutils_memcpy8(mutils_word8 *p_dest, __const mutils_word8 *p_src,
+	__const mutils_word32 n)
+{
+	mutils_word32 i;
+
+	for (i = 0; i < n; i++)
+	{
+		*p_dest++ = *p_src++;
+	}
+}
+
 WIN32DLL_DEFINE
 void
 mutils_memcpy(void *dest, __const void *src, __const mutils_word32 n)
@@ -168,6 +213,16 @@ mutils_memcpy(void *dest, __const void *src, __const mutils_word32 n)
 	if ((dest == NULL) || (src == NULL) || (n == 0))
 	{
 		return;
+	}
+
+	ptr1 = (mutils_word8 *)src;
+	ptr2 = dest;
+
+	/* copy byte-by-byte for small and/or unaligned copies */
+	if ((n < 16) || ((mutils_word32)ptr1 & 0x3) || ((mutils_word32)ptr2 
+& 0x3))
+	{
+		return mutils_memcpy8(ptr2, ptr1, n);
 	}
 
 	words = n >> 2;
@@ -373,6 +428,9 @@ WIN32DLL_DEFINE
 mutils_word8 *
 mutils_strcat(mutils_word8 *dest, __const mutils_word8 *src)
 {
+	mutils_word8 *ptrIn = (mutils_word8 *) src;
+	mutils_word8 *ptrOut = dest + mutils_strlen(dest);
+
 	if (dest == NULL)
 	{
 		return(NULL);
@@ -380,8 +438,15 @@ mutils_strcat(mutils_word8 *dest, __const mutils_word8 *src)
 	if (src == NULL)
 	{
 		return(dest);
+	}	
+	while (*src != 0)
+	{
+		*ptrOut = *ptrIn;
+		ptrOut++;
+		ptrIn++;
 	}
-	return((mutils_word8 *) strcat((char *) dest, (char *) src));
+	*ptrOut = '\0';
+	return((mutils_word8 *) dest);
 }
 
 WIN32DLL_DEFINE
@@ -464,9 +529,8 @@ mutils_word8
 mutils_val2char(mutils_word8 x)
 {
 	mutils_word8 out;
-	mutils_word8 out2;
 
-	static mutils_word8 *table = "0123456789abcdef";
+	static mutils_word8 *table = (mutils_word8 *) "0123456789abcdef";
 
 	out = *(table + x);
 
@@ -497,8 +561,6 @@ mutils_thequals(mutils_word8 *text, mutils_word8 *hash, __const mutils_word32 le
 	mutils_word8  *ptrText = text;
 	mutils_word8  *ptrHash = hash;
 	mutils_word32  loop;
-	mutils_word8   temp;
-	mutils_boolean equals;
 
 	for (loop = 0; loop < len; loop++, ptrHash++)
 	{

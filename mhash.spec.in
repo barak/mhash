@@ -40,6 +40,10 @@ Install the mhash-devel package if you want to develop applications that
 will use the mhash library.
 
 %changelog
+* Tue Feb 20 2007 Jonathan Day <imipak@yahoo.com>
+- Fixed symbol conflicts in config file
+* Mon Feb 19 2007 Jonathan Day <imipak@yahoo.com>
+- Included fixes for memory leaks and endian issues
 * Sun Jan 8 2006 Jonathan Day <imipak@yahoo.com>
 - Interface cleanup
 * Wed Jan 12 2005 Jonathan Day <imipak@yahoo.com>
