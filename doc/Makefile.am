@@ -1,12 +1,12 @@
 
-EXTRA_DIST = mhash.pod README.lib digest.c md5-rfc1321.txt sha1.txt test.c \
-		mhash.html mhash.0 mhash.3
+EXTRA_DIST = mhash.pod md5-rfc1321.txt \
+		mhash.html mhash.0 mhash.3 skid2-authentication example.c
 
-man_MANS = mhash.3
+man_MANS = $(srcdir)/mhash.3
 
-PODPARAMS=--section=3 --center="mhash library" --date="1999/05/21" --release="mhash @MHASH_VERSION@"
+PODPARAMS=--section=3 --center="mhash library" --date="2000/03/23" --release="mhash @MHASH_VERSION@"
 
-dist_targets = mhash.0 mhash.3 mhash.html
+dist_targets = mhash.0 $(srcdir)/mhash.3 mhash.html
 
 MAINTAINERCLEANFILES=$(dist_targets)
 

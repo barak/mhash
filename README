@@ -1,4 +1,4 @@
-mhash README ($Date: 1999/10/11 15:12:00 $)
+mhash README ($Date: 2001/02/04 12:06:10 $)
 ===============================================================================
 
   OVERVIEW
@@ -6,36 +6,24 @@ mhash README ($Date: 1999/10/11 15:12:00 $)
   Description
   -----------
 
-  The mhash library provides an easy way to access strong hashes such as MD5
-  and SHA1. 
+  The mhash library provides an easy way to access strong hashes such as MD5,
+  SHA1 and other algorithms.
 
   Features
   --------
 
   The mhash library provides the following features:
 
-   o  Open-Source software (BSD-style license)
-   o  Useable for both commercial and non-commercial use
-   o  Reentrancy support through POSIX threads 
+   o  Free software (GNU Lesser General Public License)
+   o  Reentrancy support
    o  Support for known strong algorithms
-   o  Support for less-know algorithms such as GOST
+   o  Support for less-known algorithms such as GOST
    o  Should work on every ANSI C conforming platform
 
   Disclaimer
   ----------
 
-  Before you use mhash, you have to agree to the following disclaimer:
-
-  THIS SOFTWARE IS PROVIDED BY SASCHA SCHUMANN ``AS IS'' AND ANY EXPRESSED OR
-  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
-  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
-  EVENT SHALL SASCHA SCHUMANN OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  Please read the file COPYING before using mhash.
   
   Installation
   ------------
@@ -46,13 +34,9 @@ mhash README ($Date: 1999/10/11 15:12:00 $)
   ------------
 
   Information on how to retrieve new versions of mhash can be found on
-  <URL:http://schumann.cx/mhash/>.
+  <URL:http://mhash.sourceforge.net>.
 
   Credits
   -------
 
-  Special thanks to Nikos Mavroyanopoulos for his initial work on mhash. He is
-  currently working on mcrypt, a library which implements several strong
-  ciphers, and has passed the "stab" of maintaining and improving the library
-  to me.
-
+  Please read the file AUTHORS.
