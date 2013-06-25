@@ -1,3 +1,19 @@
+mhash (0.9.9.9-2) unstable; urgency=low
+
+  * debian/control:
+    - add VCS field (collab-maint git repo)
+    - add homepage field
+    - bump standards version
+    - add self as co-maintainer
+  * Move to dh9, update packaging scripts accordingly
+  * Use dh-autoreconf
+  * Support multiarch using dh-exec
+  * Switch to dpkg source format 3.0 (quilt)
+  * Incorporate Fedora patches (closes: #649092)
+  * Patch a spelling error
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Tue, 25 Jun 2013 09:43:43 +0100
+
 mhash (0.9.9.9-1.1) unstable; urgency=low
 
   * NMU
