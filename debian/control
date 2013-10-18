@@ -27,7 +27,6 @@ Description: Library for cryptographic hashing and message authentication
 Package: libmhash-dev
 Section: libdevel
 Architecture: any
-Multi-Arch: same
 Depends: libmhash2 (= ${binary:Version}), libc6-dev, ${misc:Depends}
 Description: Library for cryptographic hashing and message authentication
  Mhash is a library that provides a uniform interface to a large
