@@ -1,3 +1,10 @@
+mhash (0.9.9.9-4) unstable; urgency=low
+
+  * disable multi-arch for -dev package (closes: #723667)
+  * minor autotools patches
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Fri, 18 Oct 2013 19:33:51 +0100
+
 mhash (0.9.9.9-3) unstable; urgency=low
 
   * turn on multi-arch: same to allow co-existence
