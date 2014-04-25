@@ -155,6 +155,11 @@ AC_ARG_ENABLE(whirlpool,
 , 
 AC_DEFINE(ENABLE_WHIRLPOOL, 1, "Whirlpool Algorithm"))
 
+AC_ARG_ENABLE([pkgconfig],
+    [AS_HELP_STRING([--enable-pkgconfig],[generate pkg-config .pc file])])
+AM_CONDITIONAL([ENABLE_PKGCONFIG], [test x"$enable_pkgconfig" = xyes])
+PKG_INSTALLDIR
+
 AC_CONFIG_FILES([Makefile
 		 mhash.spec
 		 include/Makefile
