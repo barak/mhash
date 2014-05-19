@@ -7,5 +7,8 @@ export CPPFLAGS =						\
 	-DMHASH_ROBUST						\
 	$(shell dpkg-buildflags --get CPPFLAGS)
 
+override_dh_auto_configure:
+	dh_auto_configure -- --enable-pkgconfig
+
 override_dh_installchangelogs:
 	dh_installchangelogs NEWS
