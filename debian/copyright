@@ -3,8 +3,14 @@ Wed,  7 Jul 1999 14:47:59 +0200.
 
 It was downloaded from http://mhash.sourceforge.net/
 
-The current (as of Oct 2013) upstream development repository is
-git://git.code.sf.net/p/mhash/code
+Repositories of interest:
+
+  Upstream development:
+    git://git.code.sf.net/p/mhash/code
+  Fork thereof used for pushing patched upstream:
+    git://git.code.sf.net/u/bpearlmutter/mhash
+  Debian packaging repository:
+    git://anonscm.debian.org/collab-maint/mhash.git
 
 Upstream Authors:
 	Nikos Mavroyanopoulos <nmav@hellug.gr>
