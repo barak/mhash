@@ -28,6 +28,8 @@
 /m4/lt~obsolete.m4
 /mhash.pc
 /missing
+/src/*.log
+/src/*.trs
 /src/driver
 /src/frag_test
 /src/hmac_test
