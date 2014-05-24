@@ -236,9 +236,13 @@ This frees all resources associated with thread and returns the result of the
 whole hashing operation (the ``I<mac>''). The result will be allocated
 by using the hash_malloc() function provided.
 
+=back
+
 =head1 KEYGEN API FUNCTIONS
 
 We will now describe the Key Generation API of B<mhash> in detail. 
+
+=over 4
 
 =item int B<mhash_keygen_ext>(keygenid I<algorithm>, KEYGEN I<algorithm_data>, void* I<keyword>, int I<keysize>, unsigned char* I<password>, int I<passwordlen>);
 
