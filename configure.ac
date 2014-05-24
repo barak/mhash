@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.69])
-AC_INIT([MHASH],[0.9.9],[mhash-devel@sourceforge.net],[mhash],[http://mhash.sourceforge.net])
+AC_INIT([MHASH],[0.9.9.9],[mhash-devel@sourceforge.net],[mhash],[http://mhash.sourceforge.net])
 AC_CANONICAL_TARGET
 AC_CONFIG_SRCDIR([lib/mhash.c])
 AC_CONFIG_MACRO_DIR([m4])
