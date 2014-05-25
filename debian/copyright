@@ -11,6 +11,8 @@ Repositories of interest:
     git://git.code.sf.net/u/bpearlmutter/mhash
   Debian packaging repository:
     git://anonscm.debian.org/collab-maint/mhash.git
+  Clone thereof:
+    git://github.com/barak/mhash
 
 Upstream Authors:
 	Nikos Mavroyanopoulos <nmav@hellug.gr>
