@@ -1,6 +1,8 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = include lib doc src
 
+EXTRA_DIST = autogen.sh
+
 # Some git equivalent of this needs to be found.
 # Something like the git-dch but not specific to Debian.
 ChangeLog:
@@ -8,6 +10,10 @@ ChangeLog:
 
 # Pre-CVS artifact: this generates a ChangeLog from RCS!
 EXTRA_DIST += changelog-update.sh
+
+# MS Windows support, include in "make dist":
+EXTRA_DIST += CYGWIN-PATCHES/README CYGWIN-PATCHES/setup.hint \
+ win32/libmhash/libmhash.dsp win32/mhash/mhash.dsp
 
 if ENABLE_PKGCONFIG
 mhash.pc:

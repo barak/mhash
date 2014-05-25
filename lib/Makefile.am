@@ -26,3 +26,6 @@ libmhash_la_SOURCES = $(FRAMEWORK) $(KEYGEN) $(CRC) $(MD_SERIES) \
 libmhash_la_LDFLAGS = -version-info 2:1
 
 EXTRA_DIST = libmhash.sym
+
+# Old stuff, otherwise untouched, include in "make dist"
+EXTRA_DIST += sha256.c mhash_sha256.h
