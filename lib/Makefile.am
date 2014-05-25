@@ -2,7 +2,7 @@ AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include
 
 lib_LTLIBRARIES = libmhash.la
 
-FRAMEWORK = mhash.c stdfns.c mhash.h mhash_int.h libdefs.h
+FRAMEWORK = mhash.c stdfns.c mhash_int.h libdefs.h
 
 KEYGEN = keygen_hex.c keygen_mcrypt.c keygen_asis.c keygen.c keygen_s2k.c \
 		keygen.h
