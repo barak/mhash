@@ -26,6 +26,3 @@ libmhash_la_SOURCES = $(FRAMEWORK) $(KEYGEN) $(CRC) $(MD_SERIES) \
 libmhash_la_LDFLAGS = -version-info 2:1
 
 EXTRA_DIST = libmhash.sym
-
-dist-hook:
-	find $(distdir) -name CVS -o -name .cvsignore | xargs rm -rf

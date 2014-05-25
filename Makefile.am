@@ -3,8 +3,13 @@ SUBDIRS = include lib doc src
 EXTRA_DIST = mhash.spec.in mhash.spec
 USE_MHASH_CONFIG = yes
 
+# Some git equivalent of this needs to be found.
+# Something like the git-dch but not specific to Debian.
 ChangeLog:
 	cvs2cl --utc --fsf -t -S --prune
+
+# Pre-CVS artifact: this generates a ChangeLog from RCS!
+EXTRA_DIST += changelog-update.sh
 
 if ENABLE_PKGCONFIG
 mhash.pc:
