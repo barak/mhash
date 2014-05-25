@@ -1,7 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = include lib doc src
 EXTRA_DIST = mhash.spec.in mhash.spec
-USE_MHASH_CONFIG = yes
 
 # Some git equivalent of this needs to be found.
 # Something like the git-dch but not specific to Debian.
