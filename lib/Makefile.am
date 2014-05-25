@@ -1,5 +1,3 @@
-#AUTOMAKE_OPTIONS = foreign
-
 AM_CPPFLAGS = -I../include
 
 lib_LTLIBRARIES = libmhash.la

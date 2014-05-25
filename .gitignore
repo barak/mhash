@@ -3,6 +3,7 @@
 *.o
 .deps/
 .libs/
+/INSTALL
 /aclocal.m4
 /ar-lib
 /autom4te.cache/
