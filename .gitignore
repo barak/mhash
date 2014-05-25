@@ -1,6 +1,7 @@
 *.la
 *.lo
 *.o
+*.tmp
 .deps/
 .libs/
 /INSTALL
@@ -15,6 +16,8 @@
 /configure
 /depcomp
 /doc/mhash.3
+/doc/mhash.3.txt
+/doc/mhash.html
 /include/mutils/config.h
 /include/mutils/config.h.in
 /include/mutils/mhash_config.h
@@ -31,6 +34,8 @@
 /mhash.pc
 /mhash.spec
 /missing
+/src/*.log
+/src/*.trs
 /src/driver
 /src/frag_test
 /src/hmac_test
