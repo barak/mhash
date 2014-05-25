@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-AM_CPPFLAGS = -I../include
+AM_CPPFLAGS = -I$(top_builddir)/include -I$(top_srcdir)/include
 
 EXTRA_DIST = hash_test.sh 
 
