@@ -61,7 +61,6 @@ AC_CHECK_HEADERS([signal.h stdint.h stdio.h stdlib.h string.h strings.h])
 
 dnl Checks for functions
 
-AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 
 AC_CHECK_FUNCS(bcopy bzero)
