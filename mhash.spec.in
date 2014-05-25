@@ -4,9 +4,9 @@ Summary: Thread-safe hash library
 Name: @PACKAGE@
 Version: @VERSION@
 Release: 1
-Copyright: LGPL
+License: LGPL
 Group: System Environment/Libraries
-Source: http://mhash.sf.net/dl/%{name}-%{version}.tar.gz
+Source: http://mhash.sf.net/dl/%{name}-%{version}.tar.bz2
 BuildRoot: /tmp/%{name}-%{version}-root
 Packager: Germano Rizzo <mano@pluto.linux.it>
 URL: http://mhash.sf.net
@@ -40,6 +40,8 @@ Install the mhash-devel package if you want to develop applications that
 will use the mhash library.
 
 %changelog
+* Fri Apr 15 2011 Graham Leggett <minfrin@sharp.fm>
+- Enable builds on 64 bit platforms
 * Tue Feb 20 2007 Jonathan Day <imipak@yahoo.com>
 - Fixed symbol conflicts in config file
 * Mon Feb 19 2007 Jonathan Day <imipak@yahoo.com>
@@ -62,14 +64,13 @@ will use the mhash library.
 %setup
 
 %build
-ENABLING="--enable-static=yes --enable-shared=yes"
-CFLAGS="${RPM_OPT_FLAGS}"
-CFLAGS="$RPM_OPT_FLAGS" ./configure "$ENABLING" --prefix=%{prefix}
+%configure --enable-static=yes --enable-shared=yes --prefix=%{prefix} \
+	CFLAGS="$RPM_OPT_FLAGS"
 make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-make prefix=$RPM_BUILD_ROOT%{prefix} install
+make install DESTDIR=$RPM_BUILD_ROOT
 
 %post -p /sbin/ldconfig
 
@@ -80,17 +81,17 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-, root, root, 0755)
-%{prefix}/lib/libmhash.so.*
+%{_libdir}/libmhash.so.*
 
 %files devel
 %defattr(-, root, root, 0755)
 %doc AUTHORS COPYING INSTALL ChangeLog NEWS README TODO
-%doc doc/example.c doc/md5-rfc1321.txt doc/mhash.html doc/skid2-authentication
-%{prefix}/man/man3/mhash.3*
-%{prefix}/lib/*.a
-%{prefix}/lib/*.la
-%{prefix}/lib/*.so
-%{prefix}/include/*.h
-%{prefix}/include/mutils/*.h
+%doc doc/example.c doc/skid2-authentication
+%{_mandir}/man3/mhash.3*
+%{_libdir}/*.a
+%{_libdir}/*.la
+%{_libdir}/*.so
+%{_includedir}/*.h
+%{_includedir}/mutils/*.h
 
 
