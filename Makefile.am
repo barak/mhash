@@ -33,4 +33,4 @@ mhash.pc:
 pkgconfig_DATA = mhash.pc
 endif
 
-MOSTLYCLEAN = $(pkgconfig_DATA)
+MOSTLYCLEANFILES = mhash.pc

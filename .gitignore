@@ -40,7 +40,7 @@
 /src/frag_test
 /src/hmac_test
 /src/keygen_test
-/src/rest_test
+/src/mhash_save_restore_test
 /test-driver
 Makefile
 Makefile.in
