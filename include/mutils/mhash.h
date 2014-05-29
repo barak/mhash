@@ -24,8 +24,6 @@
 #if !defined(__MUTILS_MHASH_H)
 #define __MUTILS_MHASH_H
 
-/* $Id: mhash.h,v 1.2 2006/01/09 07:27:04 imipak Exp $ */
-
 #if defined(MUTILS_USE_MHASH_CONFIG)
 #include <mutils/mhash_config.h>
 #endif

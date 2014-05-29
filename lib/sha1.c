@@ -9,8 +9,6 @@
  * Adapted to pike and some cleanup by Niels Möller.
  */
 
-/* $Id: sha1.c,v 1.6 2006/01/08 09:08:29 imipak Exp $ */
-
 /* SHA: NIST's Secure Hash Algorithm */
 
 /* Based on SHA code originally posted to sci.crypt by Peter Gutmann

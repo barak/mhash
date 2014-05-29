@@ -1,7 +1,5 @@
 #! /bin/sh
 
-# $Id: hash_test.sh,v 1.13 2005/01/12 17:37:05 imipak Exp $
-
 if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
   if (echo $ac_n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
     ac_n= ac_c='

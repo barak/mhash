@@ -24,8 +24,6 @@
  * This is a simple test driver for use in combination with test_hash.sh
  *
  * It's ugly, limited and you should hit :q! now
- *
- * $Id: driver.c,v 1.7 2006/01/08 09:08:29 imipak Exp $
  */
 
 #define MUTILS_USE_MHASH_CONFIG

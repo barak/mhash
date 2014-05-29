@@ -19,10 +19,6 @@
  */
 
 
-/*
-   $Id: stdfns.c,v 1.2 2006/01/10 03:47:18 imipak Exp $ 
- */
-
 #include "libdefs.h"
 #include <limits.h>
 

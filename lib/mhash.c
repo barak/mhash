@@ -20,8 +20,6 @@
  */
 
 
-/* $Id: mhash.c,v 1.42 2006/01/10 04:40:48 imipak Exp $ */
-
 #include <libdefs.h>
 
 #include <mhash_int.h>
