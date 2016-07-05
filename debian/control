@@ -1,10 +1,9 @@
 Source: mhash
 Section: libs
 Priority: optional
-Maintainer: Chris Hanson <cph@debian.org>
-Uploaders: Barak A. Pearlmutter <bap@debian.org>
+Maintainer: Barak A. Pearlmutter <bap@debian.org>
 Build-Depends: debhelper (>= 9), dh-autoreconf, pkg-config
-Standards-Version: 3.9.5
+Standards-Version: 3.9.8
 Homepage: http://mhash.sourceforge.net/
 Vcs-Git: git://anonscm.debian.org/collab-maint/mhash.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/mhash.git
