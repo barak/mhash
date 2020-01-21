@@ -12,3 +12,4 @@
 0012-autoconf-toe-step.patch
 0013-autotools-updates.patch
 0014-generate-mhash.pc.patch
+0015-mhash-0.9.9-no-free-before-use.patch
