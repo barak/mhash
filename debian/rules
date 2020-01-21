@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 %:
-	dh $@ --parallel --with autoreconf
+	dh $@ --parallel
 
 export CPPFLAGS =						\
 	-DMHASH_ROBUST						\
