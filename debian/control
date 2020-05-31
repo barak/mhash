@@ -2,7 +2,7 @@ Source: mhash
 Section: libs
 Priority: optional
 Maintainer: Barak A. Pearlmutter <bap@debian.org>
-Build-Depends: debhelper-compat (= 12), pkg-config
+Build-Depends: debhelper-compat (= 13), pkg-config
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://mhash.sourceforge.net/
