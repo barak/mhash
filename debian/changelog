@@ -1,3 +1,15 @@
+mhash (0.9.9.9-10) unstable; urgency=low
+
+  * Use secure URI in Homepage field.
+  * Update standards version to 4.7.0, no changes needed.
+  * Clean mhash.pc (closes: #1048670)
+  * Patches:
+    - mv configure.in to configure.ac and autoupdate
+    - explicit pointer cast (closes: 1075269)
+    - call a callback that needs to be called (closes: #777190)
+
+ -- Barak A. Pearlmutter <bap@debian.org>  Mon, 28 Oct 2024 14:59:50 +0000
+
 mhash (0.9.9.9-9) unstable; urgency=medium
 
   * add attribution to early free patch
