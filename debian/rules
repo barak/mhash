@@ -2,6 +2,9 @@
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
+# make it work on gcc-15  (fix ftbfs - bug #1097393)
+CFLAGS+=--std=gnu17
+
 %:
 	dh $@
 
