@@ -6,8 +6,9 @@ mhash (0.9.9.9-11) unstable; urgency=medium
   [ Barak A. Pearlmutter ]
   * bump policy
   * remove now-unnecessary Rules-Requires-Root: no
+  * remove derived file doc/mhash.3 and remove from spelling patch
 
- -- Barak A. Pearlmutter <bap@debian.org>  Thu, 01 Jan 2026 21:29:14 +0000
+ -- Barak A. Pearlmutter <bap@debian.org>  Thu, 01 Jan 2026 22:18:20 +0000
 
 mhash (0.9.9.9-10) unstable; urgency=low
 

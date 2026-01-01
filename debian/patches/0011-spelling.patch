@@ -4,42 +4,10 @@ Subject: spelling
 
 correct "seperately" to "separately"
 ---
- doc/mhash.3             | 6 +++---
  doc/mhash.pod           | 6 +++---
  include/mutils/mutils.h | 2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/doc/mhash.3 b/doc/mhash.3
-index 79fdbf6..8ea74c4 100644
---- a/doc/mhash.3
-+++ b/doc/mhash.3
-@@ -281,7 +281,7 @@ in bytes. Otherwise, it returns 0.
- .IP "char *\fBmhash_get_hash_name\fR(hashid \fItype\fR);" 4
- .IX Item "char *mhash_get_hash_name(hashid type);"
- If \fItype\fR exists, this returns the name of the hash \fItype\fR. Otherwise, a
--\&\f(CW\*(C`NULL\*(C'\fR pointer is returned. The string is allocated with \fImalloc\fR\|(3) seperately,
-+\&\f(CW\*(C`NULL\*(C'\fR pointer is returned. The string is allocated with \fImalloc\fR\|(3) separately,
- so do not forget to \fIfree\fR\|(3) it.
- .IP "const char *\fBmhash_get_hash_name_static\fR(hashid \fItype\fR);" 4
- .IX Item "const char *mhash_get_hash_name_static(hashid type);"
-@@ -414,7 +414,7 @@ Algorithms are numbered from 0 to \f(CW\*(C`mhash_keygen_count()\*(C'\fR.
- .IP "char *\fBmhash_get_keygen_name\fR(keygenid \fItype\fR);" 4
- .IX Item "char *mhash_get_keygen_name(keygenid type);"
- If \fItype\fR exists, this returns the name of the keygen \fItype\fR. Otherwise, a
--\&\f(CW\*(C`NULL\*(C'\fR pointer is returned. The string is allocated with \fImalloc\fR\|(3) seperately,
-+\&\f(CW\*(C`NULL\*(C'\fR pointer is returned. The string is allocated with \fImalloc\fR\|(3) separately,
- so do not forget to \fIfree\fR\|(3) it.
- .IP "const char *\fBmhash_get_keygen_name_static\fR(keygenid \fItype\fR);" 4
- .IX Item "const char *mhash_get_keygen_name_static(keygenid type);"
-@@ -530,7 +530,7 @@ This library was originally written by \fINikos Mavroyanopoulos\fR
- The library is now maintained by \fINikos Mavroyanopoulos\fR.
- .SH "BUGS"
- .IX Header "BUGS"
--If you find any, please send a bug report (preferrably together with a patch)
-+If you find any, please send a bug report (preferably together with a patch)
- to the maintainer with a detailed description on how to reproduce the bug.  
- .SH "AUTHORS"
- .IX Header "AUTHORS"
 diff --git a/doc/mhash.pod b/doc/mhash.pod
 index 6660c38..7965999 100644
 --- a/doc/mhash.pod

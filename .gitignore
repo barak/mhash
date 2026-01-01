@@ -13,6 +13,7 @@
 /config.sub
 /configure
 /depcomp
+/doc/mhash.3
 /include/mutils/config.h
 /include/mutils/config.h.in
 /include/mutils/mhash_config.h

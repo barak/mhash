@@ -7,10 +7,8 @@ Taken from Gentoo:
 http://mirror.its.uidaho.edu/pub/gentoo-portage/app-crypt/mhash/files/mhash-0.9.9-autotools-namespace-stomping.patch
 ---
  configure.in                     |  1 +
- include/mutils/config.h.in       | 22 ++++++++++++++++++++++
  include/mutils/mhash_config.h.in | 21 ---------------------
- 3 files changed, 23 insertions(+), 21 deletions(-)
- create mode 100644 include/mutils/config.h.in
+ 2 files changed, 1 insertion(+), 21 deletions(-)
 
 diff --git a/configure.in b/configure.in
 index 17836f9..a667d94 100644
@@ -24,34 +22,6 @@ index 17836f9..a667d94 100644
  AC_CONFIG_HEADER([include/mutils/mhash_config.h])
  
  
-diff --git a/include/mutils/config.h.in b/include/mutils/config.h.in
-new file mode 100644
-index 0000000..a8db4ac
---- /dev/null
-+++ b/include/mutils/config.h.in
-@@ -0,0 +1,22 @@
-+/* Name of package */
-+#undef PACKAGE
-+
-+/* Define to the address where bug reports for this package should be sent. */
-+#undef PACKAGE_BUGREPORT
-+
-+/* Define to the full name of this package. */
-+#undef PACKAGE_NAME
-+
-+/* Define to the full name and version of this package. */
-+#undef PACKAGE_STRING
-+
-+/* Define to the one symbol short name of this package. */
-+#undef PACKAGE_TARNAME
-+
-+/* Define to the version of this package. */
-+#undef PACKAGE_VERSION
-+
-+/* Version number of package */
-+#undef VERSION
-+
-+
 diff --git a/include/mutils/mhash_config.h.in b/include/mutils/mhash_config.h.in
 index ed22aa5..9e039e6 100644
 --- a/include/mutils/mhash_config.h.in
